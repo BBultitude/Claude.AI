@@ -1,104 +1,157 @@
-# Project Instruction Templates — How to Use
+# Project Setup Guide  
+How to Use `project_instructions.txt` and `INSTRUCTIONS.md`
 
-This repository contains two templates for managing Claude-based development projects:
-
-1. `project-template-new.md` — For **new (greenfield) projects**
-2. `project-template-existing.md` — For **existing (brownfield) projects**
-
-Each template defines:
-- How Claude should behave
-- How documentation is created and maintained
-- How sprints and tasks are structured
-- How testing is performed
-- How cybersecurity is enforced
-- How project-specific rules are applied
+This repository uses a two‑layer instruction system to ensure predictable, stable, and high‑quality behaviour from Claude across all project types.  
+Both files serve different purposes and must be placed in specific locations.
 
 ---
 
-# Choosing the Right Template
+## 1. Overview
 
-Use the decision tree below:
+This project uses:
 
-## ✔ Use the **New Project Template** if:
-- You are building something from scratch  
-- No code exists yet  
-- No architecture exists  
-- No documentation exists  
-- You need a **Design.md**  
-- You want Claude to design the system before coding  
+1. **project_instructions.txt**  
+   The behavioural rules that Claude reads *every time* inside the Claude.ai Project Instructions panel.
 
-This is your **greenfield** workflow.
+2. **INSTRUCTIONS.md**  
+   The full, versioned, canonical specification for how Claude should operate across:
+   - Greenfield projects  
+   - Brownfield projects  
+   - Reverse‑engineering  
+   - Redesign cycles  
+   - Continuous improvement  
+   - Code implementation  
 
----
-
-## ✔ Use the **Existing Project Template** if:
-- The system already exists  
-- You are adding features  
-- You are modifying behaviour  
-- You are fixing bugs  
-- You are applying security patches  
-- You are refactoring or improving performance  
-
-This is your **brownfield** workflow.
+These two files work together to create a stable, repeatable workflow.
 
 ---
 
-# Special Case: Old Project With No Design.md
+## 2. What Each File Is For
 
-If you have an existing system **but no Design.md**, use the **Existing Project Template**.
+### `project_instructions.txt`  
+**Purpose:**  
+Defines Claude’s behaviour, guardrails, roles, and workflow logic.
 
-Claude will:
-1. Load the existing project files  
-2. Ask clarifying questions  
-3. Reverse-engineer the architecture  
-4. Build a **Design-Reconstruction.md**  
-5. Freeze it as the new source of truth  
-6. Only then begin enhancements  
+**Where it goes:**  
+Paste the entire contents into the **Claude.ai → Project Instructions** panel.
 
-This ensures long-term maintainability.
+**Why:**  
+Claude reads this field *before every message*.  
+It cannot reliably follow external references, so the behavioural rules must be inline.
 
----
+**This file controls:**
+- Role switching  
+- Workflow selection  
+- Guardrails  
+- Code output rules  
+- Document lifecycle rules  
+- Scope boundaries  
+- Clarification requirements  
 
-# Workflow Summary
-
-## New Project Workflow
-1. Create a new Claude project  
-2. Paste `project-template-new.md` into Project Instructions  
-3. First chat → Claude builds Design.md  
-4. Approve Design.md  
-5. Begin sprints and coding  
-6. Maintain Design.md as the project evolves  
+This is the AI’s “operating system.”
 
 ---
 
-## Existing Project Workflow
-1. Create a new Claude project  
-2. Paste `project-template-existing.md` into Project Instructions  
-3. First chat → Claude builds Improvements.md or Design-Reconstruction.md  
-4. Approve the document  
-5. Begin enhancement sprints  
-6. Maintain Improvements.md or Reconstruction.md  
+### `INSTRUCTIONS.md`  
+**Purpose:**  
+The full, richly formatted, canonical reference for all templates, workflows, and architectural rules.
+
+**Where it goes:**  
+Add it to the **project files** in the Claude.ai project (or your repo).
+
+**Why:**  
+Claude can open and reference this file when asked, but does not automatically load it.  
+It provides:
+- Full templates  
+- Detailed workflows  
+- Versioned design rules  
+- Brownfield and legacy handling  
+- Redesign templates  
+- Improvements.md structure  
+- Code output templates  
+
+This is the AI’s “documentation and specification.”
 
 ---
 
-# Why Two Templates?
+## 3. Why Both Files Are Required
 
-New builds and existing systems have fundamentally different workflows:
+### `project_instructions.txt`  
+- Always loaded  
+- Always active  
+- Defines behaviour  
+- Enforces rules  
+- Prevents drift  
+- Prevents hallucination  
+- Prevents scope creep  
 
-| Project Type | Required Document | First Chat Mode | Purpose |
-|--------------|-------------------|------------------|---------|
-| New Project | Design.md | Design Builder Mode | Define architecture before coding |
-| Existing Project (with Design.md) | Improvements.md | Improvements Builder Mode | Define enhancement scope |
-| Existing Project (no Design.md) | Design-Reconstruction.md | Reconstruction Mode | Reverse-engineer architecture |
+### `INSTRUCTIONS.md`  
+- Human‑readable  
+- Version‑controlled  
+- Complete and detailed  
+- Used when you say “follow the template in INSTRUCTIONS.md”  
+- Supports long‑term evolution of the system  
 
-Keeping these separate ensures:
-- Predictability  
-- Maintainability  
-- Security  
-- Clear documentation  
-- Efficient token usage  
+**They do not overlap — they complement each other.**
 
 ---
 
-# Recommended Folder Structure# Claude.AI-Project-Instructions
-Detailed templates for Claud.AI to work with projects
+## 4. Setup Steps
+
+### Step 1 — Add `project_instructions.txt` to Claude.ai
+1. Open your Claude.ai project  
+2. Go to **Project Instructions**  
+3. Paste the entire contents of `project_instructions.txt`  
+4. Save  
+
+This ensures Claude behaves correctly from the first message.
+
+---
+
+### Step 2 — Add `INSTRUCTIONS.md` to the Project Files
+1. Upload `INSTRUCTIONS.md` into the Claude.ai project file list  
+2. Claude can now reference it when asked  
+3. Do not paste it into the Project Instructions panel  
+
+This ensures Claude has access to the full templates and workflows.
+
+---
+
+### Step 3 — Use the Files During Development
+
+#### When starting a new task:
+Tell Claude:
+> “Follow the workflow defined in project_instructions.txt.”
+
+#### When generating architecture:
+> “Use the Design‑v1.md template from INSTRUCTIONS.md.”
+
+#### When generating Improvements.md:
+> “Use the Improvements.md template from INSTRUCTIONS.md.”
+
+#### When implementing code:
+> “Follow the code output rules in project_instructions.txt.”
+
+---
+
+## 5. Versioning
+
+- `project_instructions.txt` changes rarely  
+- `INSTRUCTIONS.md` evolves over time  
+- Design documents (Design‑v1.md, Design‑v2.md, etc.) are versioned  
+- Improvements.md is mutable and updated continuously  
+
+---
+
+## 6. Summary
+
+| File | Purpose | Location | Behaviour |
+|------|----------|-----------|-----------|
+| **project_instructions.txt** | Behavioural rules | Claude.ai Project Instructions | Always active |
+| **INSTRUCTIONS.md** | Full specification & templates | Project files / repo | Referenced when needed |
+
+Both files are required for a stable, predictable, and maintainable AI‑assisted development workflow.
+
+---
+
+If you are onboarding a new contributor or setting up a new Claude project, follow this README exactly.
