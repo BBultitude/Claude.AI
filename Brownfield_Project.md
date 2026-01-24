@@ -31,47 +31,38 @@ If a task conflicts with security best practices, you must flag it immediately.
 
 ---
 
-## 3. Design.md Workflow (Source-of-Truth Documentation)
+## 3. Documentation Workflow (Source-of-Truth)
 
-### 3.1 Mandatory Design.md
-A project cannot begin until a Design.md file exists.
+### 3.1 Documentation Types in Brownfield Projects
+Brownfield projects use one of two documentation types:
 
-Design.md must include:
-- What the project is
-- Why it exists
-- How it will be built
-- Architecture overview
-- Security considerations
-- Sprint plan
-- Known limitations
-- Future planned work
+1. **Improvements.md**  
+   Used when the original project already has a valid Design.md.
 
-### 3.2 First Chat Behaviour
-If Design.md does not exist:
-- Enter **Design Builder Mode**
-- No code is to be written
-- Ask clarifying questions as needed
-- Build a complete Design.md
-- Wait for approval before writing any code
+2. **Design-Reconstruction.md**  
+   Used when the original project has *no* Design.md.  
+   This document reverse-engineers the original system and becomes the frozen baseline.
 
 ---
 
-## 4. Maintaining Design.md
-Design.md must always reflect the current state of the project.
+## 4. Maintaining Documentation
+Documentation must always reflect the current state of the project.
 
 Whenever:
-- New code is added
-- Code is changed
-- Architecture decisions shift
-- A limitation is discovered
-- A sprint is partially completed
-- A future task is identified
+- Enhancements are added
+- Bugs are fixed
+- Security issues are resolved
+- Architecture changes
+- Limitations are discovered
+- Work is deferred
 
 You must:
-1. Call out that Design.md requires an update  
+1. Call out that Improvements.md requires an update  
 2. Provide updated sections  
 3. Replace outdated content  
-4. Ensure project files remain the single source of truth  
+4. Ensure Improvements.md remains the single source of truth  
+
+Design-Reconstruction.md is **never modified** after approval.
 
 If something must be deferred, create a `Deferred-Work.md` file.
 
@@ -115,7 +106,7 @@ For medium or large requests:
 At the end of each sprint:
 - Provide a summary
 - Provide tasks for the next chat
-- Update Design.md and deferred-work documents
+- Update Improvements.md and deferred-work documents
 
 ---
 
@@ -191,13 +182,20 @@ Ask for missing files, schemas, configs, or clarifications **before** generating
 
 ---
 
-
-## 11. Project Type: Enhancement / Maintenance (Brownfield)
+## 11. Brownfield Project Workflow (Critical Logic)
 
 ### 11.1 Determine Documentation State
-If the original project has:
-- A valid Design.md → Build **Improvements.md**
-- No Design.md → Build **Design-Reconstruction.md**
+When starting this project, Claude must determine which documentation exists:
+
+- **If the original project has a valid Design.md:**  
+  → Build **Improvements.md**
+
+- **If the original project does NOT have a Design.md:**  
+  → Claude must:  
+    1. Build **Design-Reconstruction.md** first  
+    2. Wait for approval  
+    3. Then build **Improvements.md**  
+    4. Only then begin enhancement sprints
 
 ### 11.2 First Chat Behaviour
 If Improvements.md or Design-Reconstruction.md does not exist:
@@ -208,40 +206,26 @@ If Improvements.md or Design-Reconstruction.md does not exist:
 - Build the required document
 - Wait for approval before writing any code
 
----
+### 11.3 Document Flow Summary
+The correct order of documentation creation is:
 
-## 12. Improvements.md Requirements
-Improvements.md must include:
-- Summary of the original system (reference Design.md)
-- Scope of enhancements or fixes
-- Why the changes are needed
-- How the changes will be implemented
-- Security considerations
-- Impact on existing architecture
-- Compatibility notes
-- Migration steps (if required)
-- Updated sprint plan
-- Known limitations
-- Future planned improvements
+1. **If Design.md exists:**  
+   → Build Improvements.md → Approve → Begin enhancements
 
----
+2. **If Design.md does NOT exist:**  
+   → Build Design-Reconstruction.md → Approve  
+   → Build Improvements.md → Approve  
+   → Begin enhancements
 
-## 13. Design-Reconstruction.md Requirements
-If no Design.md exists:
-- Reverse-engineer architecture from existing code
-- Document:
-  - System purpose
-  - Architecture
-  - Data flows
-  - Security model
-  - Dependencies
-  - Known issues
-  - Limitations
-  - Future work
-- Freeze this as the new source of truth
+### 11.4 Document Freezing Rules
+- **Design-Reconstruction.md is frozen permanently** after approval  
+- It must never be modified  
+- It becomes the authoritative representation of the original system  
+- All future changes belong in Improvements.md
 
 ---
 
-## 14. After Document Approval
+## 12. After Document Approval
 - Begin enhancement sprints
-- Maintain Improvements.md or Reconstruction.md
+- Maintain Improvements.md as the living source of truth
+- Maintain Design-Reconstruction.md as the frozen baseline
