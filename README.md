@@ -26,7 +26,7 @@ They must be used together for predictable, stable, and compliant execution.
 | `Projects Cheatsheet.md` | Quick-reference for project workflows |
 | `Personal Chat Handbook.md` | Guide for using Claude outside Projects |
 | `Personal Chat Cheatsheet.md` | Quick-reference for personal chat workflows |
-| `Personal Chat Example.md` | Example of a well-structured personal chat |
+| `Personal Chat Example.md` | Example of a well-structured account instructions focused on personal chat |
 
 These files define best practices, reset workflows, instruction precedence, and token-protection strategies for both modes.
 
