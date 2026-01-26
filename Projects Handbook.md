@@ -3,28 +3,103 @@
 
 ---
 
-## Table of Contents  
-*(Links will work once all parts are combined into a single file.)*
+## Table of Contents
 
-1. [Introduction](#1-introduction)  
+1. [Introduction](#1-introduction)
+
 2. [How Claude Projects Actually Works](#2-how-claude-projects-actually-works-medium-depth-overview)  
+   - [2.1 Files Are Stored Server‑Side](#21-files-are-stored-server-side)  
+   - [2.2 Project Instructions Are Auto‑Loaded](#22-project-instructions-are-auto-loaded)  
+   - [2.3 Claude Uses a Prioritised Context Model](#23-claude-uses-a-prioritised-context-model)  
+   - [2.4 Claude Does Not “Remember Everything”](#24-claude-does-not-remember-everything)  
+   - [2.5 Claude Is Most Efficient When Tasks Are Small](#25-claude-is-most-efficient-when-tasks-are-small)
+
 3. [Understanding Token Usage](#3-understanding-token-usage)  
+   - [3.1 Full‑File Regeneration](#31-full-file-regeneration)  
+   - [3.2 Brainstorming Inside the Project](#32-brainstorming-inside-the-project)  
+   - [3.3 Long Conversations](#33-long-conversations)  
+   - [3.4 Re‑Explaining Context](#34-re-explaining-context)  
+   - [3.5 Re‑Uploading Files](#35-re-uploading-files)
+
 4. [Understanding the Context Window (Chat Length Limit)](#4-understanding-the-context-window-chat-length-limit)  
-   - [4.1 What the context window is](#41-what-the-context-window-is)  
-   - [4.2 How Claude manages context](#42-how-claude-manages-context)  
-   - [4.3 How context overload increases token usage](#43-how-context-overload-increases-token-usage)  
-   - [4.4 Warning signs of context overload](#44-warning-signs-of-context-overload)  
-   - [4.5 How to reset context safely](#45-how-to-reset-context-safely)  
-   - [4.6 How to prevent context overload](#46-how-to-prevent-context-overload)  
-   - [4.7 Best practices for long-running projects](#47-best-practices-for-long-running-projects)  
+   - [4.1 What the Context Window Is](#41-what-the-context-window-is)  
+   - [4.2 How Claude Manages Context](#42-how-claude-manages-context)  
+   - [4.3 How Context Overload Increases Token Usage](#43-how-context-overload-increases-token-usage)  
+   - [4.4 Warning Signs of Context Overload](#44-warning-signs-of-context-overload)  
+   - [4.5 How to Reset Context Safely](#45-how-to-reset-context-safely)  
+   - [4.6 How to Prevent Context Overload](#46-how-to-prevent-context-overload)  
+   - [4.7 Best Practices for Long‑Running Projects](#47-best-practices-for-long-running-projects)
+
 5. [Your Instruction System (How It Works)](#5-your-instruction-system-how-it-works)  
    - [5.1 `project_instructions.txt`](#51-project_instructionstxt)  
    - [5.2 `INSTRUCTIONS.md`](#52-instructionsmd)  
    - [5.3 Roles](#53-roles)  
-   - [5.4 Workflow modes](#54-workflow-modes)  
-   - [5.5 Design versioning](#55-design-versioning)  
-   - [5.6 Improvements tracking](#56-improvements-tracking)  
-   - [5.7 Architecture summaries](#57-architecture-summaries)  
+   - [5.4 Workflow Modes](#54-workflow-modes)  
+   - [5.5 Design Versioning](#55-design-versioning)  
+   - [5.6 Improvements Tracking](#56-improvements-tracking)  
+   - [5.7 Architecture Summaries](#57-architecture-summaries)
+
+6. [Starting a New Project (Step‑by‑Step)](#6-starting-a-new-project-step-by-step)  
+   - [6.1 Upload Your Files](#61-upload-your-files)  
+   - [6.2 Confirm Project Instructions Are Loaded](#62-confirm-project-instructions-are-loaded)  
+   - [6.3 Send the First Message (Template)](#63-send-the-first-message-template)  
+   - [6.4 Confirm the Architecture](#64-confirm-the-architecture)  
+   - [6.5 Move to STRATEGIST Mode](#65-move-to-strategist-mode)  
+   - [6.6 Move to ENGINEER Mode](#66-move-to-engineer-mode)  
+   - [6.7 Establish the First Task](#67-establish-the-first-task)
+
+7. [Working With Claude Effectively](#7-working-with-claude-effectively)  
+   - [7.1 The “Feature‑First” Workflow](#71-the-feature-first-workflow)  
+   - [7.2 The “Explain Before You Change” Rule](#72-the-explain-before-you-change-rule)  
+   - [7.3 The “Diff‑First” Rule](#73-the-diff-first-rule)  
+   - [7.4 When to Regenerate Full Files](#74-when-to-regenerate-full-files)  
+   - [7.5 When to Request Partial Changes](#75-when-to-request-partial-changes)  
+   - [7.6 How to Avoid Accidental Full Rewrites](#76-how-to-avoid-accidental-full-rewrites)  
+   - [7.7 Keeping Claude Anchored to Instructions](#77-keeping-claude-anchored-to-instructions)
+
+8. [Requesting Changes (Templates & Examples)](#8-requesting-changes-templates--examples)  
+   - [8.1 New Feature Request](#81-new-feature-request)  
+   - [8.2 Bug Fix](#82-bug-fix)  
+   - [8.3 Refactor](#83-refactor)  
+   - [8.4 New File](#84-new-file)  
+   - [8.5 Modify Existing File](#85-modify-existing-file)  
+   - [8.6 Reverse‑Engineering](#86-reverse-engineering)  
+   - [8.7 Architecture Changes](#87-architecture-changes)  
+   - [8.8 Documentation Updates](#88-documentation-updates)
+
+9. [Managing Large Projects](#9-managing-large-projects)  
+   - [9.1 Architecture Summaries](#91-architecture-summaries)  
+   - [9.2 Design Versioning (Design‑vX.md)](#92-design-versioning-design-vxmd)  
+   - [9.3 Improvements Tracking](#93-improvements-tracking)  
+   - [9.4 Snapshots](#94-snapshots)  
+   - [9.5 Checkpoints](#95-checkpoints)  
+   - [9.6 Resetting Context Safely](#96-resetting-context-safely)  
+   - [9.7 Avoiding Drift in Large Projects](#97-avoiding-drift-in-large-projects)
+
+10. [Troubleshooting & Recovery](#10-troubleshooting--recovery)  
+    - [10.1 Claude Rewrote a File Unexpectedly](#101-claude-rewrote-a-file-unexpectedly)  
+    - [10.2 Claude Forgot the Architecture](#102-claude-forgot-the-architecture)  
+    - [10.3 Claude Hallucinated File Structure](#103-claude-hallucinated-file-structure)  
+    - [10.4 Claude Is Asking for Files That Exist](#104-claude-is-asking-for-files-that-exist)  
+    - [10.5 Claude Is Contradicting Earlier Decisions](#105-claude-is-contradicting-earlier-decisions)  
+    - [10.6 Claude Is Drifting From Instructions](#106-claude-is-drifting-from-instructions)  
+    - [10.7 Claude Is Generating Too Much Code](#107-claude-is-generating-too-much-code)  
+    - [10.8 Claude Is Burning Tokens Too Fast](#108-claude-is-burning-tokens-too-fast)
+
+11. [Quick‑Use Cheat Sheet](#11-quick-use-cheat-sheet)  
+    - [11.1 The 10 Token‑Safe Rules](#111-the-10-token-safe-rules)  
+    - [11.2 The 3‑Step Task Workflow](#112-the-3-step-task-workflow)  
+    - [11.3 The 4 Most Important Commands](#113-the-4-most-important-commands)  
+    - [11.4 Regenerate vs Diff Decision Tree](#114-regenerate-vs-diff-decision-tree)  
+    - [11.5 Safe Message Templates](#115-safe-message-templates)  
+    - [11.6 Context Window Rules](#116-context-window-rules)  
+    - [11.7 Drift Indicators](#117-drift-indicators)  
+    - [11.8 Reset Procedure](#118-reset-procedure)  
+    - [11.9 Never‑Do List](#119-never-do-list)
+
+12. [Glossary (Non‑Developer Friendly)](#12-glossary-non-developer-friendly)
+
+13. [Final Notes](#13-final-notes)
 
 ---
 
