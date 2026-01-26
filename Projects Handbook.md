@@ -1512,7 +1512,8 @@ Ask me what we are working on.
 **Architecture** — The structure of the system.  
 **Diff** — A list of changes to a file.  
 **Refactor** — Improve code without changing behaviour.  
-**Context window** — How much Claude can remember at once.  
+**Context window** — How much Claude can remember at once.
+**Reset context** — Starting a new chat inside the same Claude Project, which clears the conversational history while preserving all project files, instructions, and structure. This prevents context‑window overload and keeps Claude aligned without requiring re‑uploads or re‑explanations.
 **Snapshot** — A point‑in‑time capture of the project.  
 **Checkpoint** — A summary of recent progress.  
 **Workflow mode** — The project type (greenfield, rebuild, etc.).  
