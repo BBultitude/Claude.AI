@@ -1,157 +1,299 @@
 # Project Setup Guide  
-How to Use `project_instructions.txt` and `INSTRUCTIONS.md`
+### How to Use `project_instructions.txt` and `INSTRUCTIONS.md` in Claude Projects
 
-This repository uses a two‑layer instruction system to ensure predictable, stable, and high‑quality behaviour from Claude across all project types.  
-Both files serve different purposes and must be placed in specific locations.
+This repository defines a **two‑layer instruction system** that ensures Claude behaves predictably, consistently, and safely across all project types.  
+It also includes handbooks, cheat sheets, and templates that support long‑term maintainability and drift‑free development.
 
----
+This guide explains:
 
-## 1. Overview
-
-This project uses:
-
-1. **project_instructions.txt**  
-   The behavioural rules that Claude reads *every time* inside the Claude.ai Project Instructions panel.
-
-2. **INSTRUCTIONS.md**  
-   The full, versioned, canonical specification for how Claude should operate across:
-   - Greenfield projects  
-   - Brownfield projects  
-   - Reverse‑engineering  
-   - Redesign cycles  
-   - Continuous improvement  
-   - Code implementation  
-
-These two files work together to create a stable, repeatable workflow.
+- What each file does  
+- Where each file goes  
+- How Claude interprets instructions  
+- How to prevent drift  
+- How to reset context safely  
+- How to use the full project workflow  
 
 ---
 
-## 2. What Each File Is For
+# 1. Repository Structure
 
-### `project_instructions.txt`  
-**Purpose:**  
-Defines Claude’s behaviour, guardrails, roles, and workflow logic.
+| File | Purpose |
+|------|---------|
+| **project_instructions.txt** | Behavioural rules Claude reads before every message |
+| **INSTRUCTIONS.md** | Full specification, templates, workflows, versioning rules |
+| **Projects Handbook.md** | Complete operational guide for Claude Projects |
+| **Projects Cheatsheet.md** | Fast reference for project workflows |
+| **Personal Chat Handbook.md** | Guide for non‑project chats |
+| **Personal Chat Cheatsheet.md** | Fast reference for personal chat workflows |
+| **README.md** | Setup guide (this file) |
 
-**Where it goes:**  
-Paste the entire contents into the **Claude.ai → Project Instructions** panel.
+---
 
-**Why:**  
-Claude reads this field *before every message*.  
-It cannot reliably follow external references, so the behavioural rules must be inline.
+# 2. Overview of the Two‑Layer Instruction System
 
-**This file controls:**
-- Role switching  
-- Workflow selection  
+Claude Projects use two complementary instruction layers:
+
+## 2.1 `project_instructions.txt` — Behaviour Layer  
+This file defines:
+
+- Roles  
+- Workflow logic  
 - Guardrails  
 - Code output rules  
-- Document lifecycle rules  
-- Scope boundaries  
-- Clarification requirements  
+- Clarification rules  
+- Safety boundaries  
+- Drift‑prevention rules  
 
-This is the AI’s “operating system.”
+Claude reads this **before every message**.  
+It is the AI’s **operating system**.
+
+**Location:**  
+Paste into **Claude.ai → Project Instructions**.
 
 ---
 
-### `INSTRUCTIONS.md`  
-**Purpose:**  
-The full, richly formatted, canonical reference for all templates, workflows, and architectural rules.
+## 2.2 `INSTRUCTIONS.md` — Specification Layer  
+This file contains:
 
-**Where it goes:**  
-Add it to the **project files** in the Claude.ai project (or your repo).
-
-**Why:**  
-Claude can open and reference this file when asked, but does not automatically load it.  
-It provides:
 - Full templates  
-- Detailed workflows  
-- Versioned design rules  
-- Brownfield and legacy handling  
-- Redesign templates  
+- Architecture rules  
+- Versioning rules  
+- Brownfield workflows  
+- Reverse‑engineering workflows  
+- Redesign workflows  
 - Improvements.md structure  
 - Code output templates  
 
-This is the AI’s “documentation and specification.”
+Claude does **not** auto‑load this file, but can reference it when asked.
+
+**Location:**  
+Upload to **Project Files**.
 
 ---
 
-## 3. Why Both Files Are Required
+# 3. Why Both Files Are Required
 
-### `project_instructions.txt`  
-- Always loaded  
-- Always active  
-- Defines behaviour  
-- Enforces rules  
-- Prevents drift  
-- Prevents hallucination  
-- Prevents scope creep  
+| File | Behaviour | Purpose |
+|------|-----------|---------|
+| **project_instructions.txt** | Always active | Defines how Claude behaves |
+| **INSTRUCTIONS.md** | Referenced on demand | Defines what Claude should produce |
 
-### `INSTRUCTIONS.md`  
-- Human‑readable  
-- Version‑controlled  
-- Complete and detailed  
-- Used when you say “follow the template in INSTRUCTIONS.md”  
-- Supports long‑term evolution of the system  
-
-**They do not overlap — they complement each other.**
+They do not overlap — they work together.
 
 ---
 
-## 4. Setup Steps
+# 4. Instruction Precedence Model (Important)
 
-### Step 1 — Add `project_instructions.txt` to Claude.ai
-1. Open your Claude.ai project  
+Claude resolves conflicting instructions in this order:
+
+1. **In‑chat instructions** (highest priority)  
+2. **project_instructions.txt**  
+3. **Profile instructions**  
+4. **Memory**  
+5. **Model defaults** (lowest priority)
+
+This ensures:
+
+- Project rules override profile rules  
+- Temporary overrides are respected  
+- Memory never interferes with project logic  
+
+---
+
+# 5. Setup Steps
+
+## Step 1 — Add `project_instructions.txt` to Claude.ai
+1. Open your Claude Project  
 2. Go to **Project Instructions**  
-3. Paste the entire contents of `project_instructions.txt`  
+3. Paste the entire file  
 4. Save  
 
 This ensures Claude behaves correctly from the first message.
 
 ---
 
-### Step 2 — Add `INSTRUCTIONS.md` to the Project Files
-1. Upload `INSTRUCTIONS.md` into the Claude.ai project file list  
+## Step 2 — Upload `INSTRUCTIONS.md` to Project Files
+1. Upload the file  
 2. Claude can now reference it when asked  
-3. Do not paste it into the Project Instructions panel  
-
-This ensures Claude has access to the full templates and workflows.
+3. Do **not** paste it into the Project Instructions panel  
 
 ---
 
-### Step 3 — Use the Files During Development
+## Step 3 — Start the Project Using the Handbook Workflow
 
-#### When starting a new task:
-Tell Claude:
-> “Follow the workflow defined in project_instructions.txt.”
+When beginning work:
 
-#### When generating architecture:
-> “Use the Design‑v1.md template from INSTRUCTIONS.md.”
+```
+Follow the workflow defined in project_instructions.txt.
+```
 
-#### When generating Improvements.md:
-> “Use the Improvements.md template from INSTRUCTIONS.md.”
+When generating architecture:
 
-#### When implementing code:
-> “Follow the code output rules in project_instructions.txt.”
+```
+Use the Design‑v1.md template from INSTRUCTIONS.md.
+```
+
+When updating Improvements.md:
+
+```
+Follow the Improvements.md structure in INSTRUCTIONS.md.
+```
+
+When writing code:
+
+```
+Follow the code output rules in project_instructions.txt.
+```
 
 ---
 
-## 5. Versioning
+# 6. Resetting Context (Critical for Stability)
 
-- `project_instructions.txt` changes rarely  
-- `INSTRUCTIONS.md` evolves over time  
-- Design documents (Design‑v1.md, Design‑v2.md, etc.) are versioned  
-- Improvements.md is mutable and updated continuously  
+Claude Projects require periodic resets to avoid:
+
+- context window overload  
+- drift  
+- hallucinated architecture  
+- token waste  
+
+## When to reset:
+- Every **20–30 messages**  
+- After major task transitions  
+- When Claude becomes inconsistent  
+- When Claude forgets architecture  
+
+## Reset workflow:
+```
+Reset context.
+Reload project_instructions.txt.
+Do not re-read all files.
+Ask me what we are working on.
+```
+
+Then:
+
+```
+Re-anchor to instructions.
+Summarise the architecture.
+Summarise the current task.
+Wait for my confirmation.
+```
 
 ---
 
-## 6. Summary
+# 7. Drift Prevention Best Practices
+
+These rules dramatically reduce errors and token usage:
+
+### ✔ Diff‑First  
+Claude must propose a diff plan before writing code.
+
+### ✔ Explain‑Before‑You‑Change  
+Claude must explain the change before generating output.
+
+### ✔ Small Tasks  
+Break work into micro‑tasks.
+
+### ✔ No Brainstorming Inside Projects  
+Use personal chats for exploration.
+
+### ✔ Checkpoints  
+Every 10–15 messages:
+
+```
+Give me a checkpoint summary.
+```
+
+### ✔ Portable Context Blocks  
+Useful when resetting context.
+
+---
+
+# 8. File Handling Rules
+
+### ✔ Files uploaded to the Project persist  
+Claude can reference them across chats.
+
+### ✔ Files uploaded in chat do NOT persist  
+They are ephemeral.
+
+### ✔ Claude cannot “remember” files  
+It retrieves them from project knowledge only.
+
+### ✔ Large projects may trigger RAG mode  
+Claude retrieves relevant files automatically when needed.
+
+---
+
+# 9. Architecture Versioning (Design‑vX.md)
+
+Architecture files must be:
+
+- immutable  
+- versioned  
+- stored as `Design‑v1.md`, `Design‑v2.md`, etc.  
+- updated only when architecture changes  
+
+Claude should never overwrite a design file — it must create a new version.
+
+---
+
+# 10. Improvements.md Lifecycle
+
+`Improvements.md` is:
+
+- mutable  
+- continuously updated  
+- the source of truth for enhancements  
+- linked to design versions  
+
+Rules:
+
+- Add entries after each sprint  
+- Reference the design version  
+- Never delete historical entries  
+- Use it to drive redesign cycles  
+
+---
+
+# 11. Links to Handbooks & Cheatsheets
+
+### 📘 Project Handbook  
+Full operational guide for Claude Projects.
+
+### 📘 Personal Chat Handbook  
+How to use Claude outside Projects.
+
+### 📄 Projects Cheatsheet  
+Fast reference for project workflows.
+
+### 📄 Personal Chat Cheatsheet  
+Fast reference for personal chat workflows.
+
+(All included in this repo.)
+
+---
+
+# 12. Summary Table
 
 | File | Purpose | Location | Behaviour |
 |------|----------|-----------|-----------|
-| **project_instructions.txt** | Behavioural rules | Claude.ai Project Instructions | Always active |
-| **INSTRUCTIONS.md** | Full specification & templates | Project files / repo | Referenced when needed |
-
-Both files are required for a stable, predictable, and maintainable AI‑assisted development workflow.
+| **project_instructions.txt** | Behavioural rules | Project Instructions panel | Always active |
+| **INSTRUCTIONS.md** | Full specification & templates | Project Files | Referenced when needed |
+| **Design‑vX.md** | Versioned architecture | Project Files | Immutable |
+| **Improvements.md** | Continuous improvement log | Project Files | Mutable |
+| **Handbooks & Cheatsheets** | Operational guidance | Repo | Human‑readable |
 
 ---
 
-If you are onboarding a new contributor or setting up a new Claude project, follow this README exactly.
+# 13. Final Notes
+
+Follow this README exactly when:
+
+- creating a new Claude Project  
+- onboarding contributors  
+- resetting context  
+- updating architecture  
+- performing redesign cycles  
+
+This system ensures Claude remains stable, predictable, and aligned across the entire lifecycle of your project.
