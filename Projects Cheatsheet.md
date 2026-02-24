@@ -1,3 +1,4 @@
+# Projects Cheatsheet
 ### *Operational shortcuts for fast, safe, predictable development inside Claude Projects*
 
 ---
@@ -7,12 +8,10 @@
 - Keep tasks **small**  
 - Reset context **every 20–30 messages**  
 - Never brainstorm inside the Project  
-- Always request a **diff plan** before code  
-- Use **Explain Before You Change**  
-- Avoid full‑file rewrites unless necessary  
 - Keep architecture summaries updated  
 - Use design versioning (`Design‑vX.md`)  
 - Keep messages short and precise  
+- **No open questions in design documents** — resolve everything before drafting  
 
 ---
 
@@ -21,7 +20,6 @@
 ```
 Act as ARCHITECT.
 Act as STRATEGIST.
-Act as ENGINEER.
 Re-anchor to instructions.
 ```
 
@@ -30,118 +28,140 @@ Re-anchor to instructions.
 ## 3. Reset Procedure (Use Often)
 
 ```
-Reset context.
-Reload project_instructions.txt.
-Do not re-read all files.
-Ask me what we are working on.
+<task>Reset context.</task>
+<constraints>
+- Reload project_instructions.txt
+- Do not re-read all files
+- Ask me what we are working on before proceeding
+</constraints>
 ```
 
 Then:
 
 ```
-Re-anchor to instructions.
-Summarise the architecture.
-Summarise the current task.
-Wait for my confirmation.
+<task>Re-anchor to instructions.</task>
+<constraints>
+- Summarise the architecture
+- Summarise the current task
+- Wait for my confirmation before proceeding
+</constraints>
 ```
 
 ---
 
 ## 4. Task Workflow (Always Follow)
 
-### Step 1 — Describe the goal  
+### Step 1 — Describe the goal
 What you want, why, and the user outcome.
 
-### Step 2 — Confirm the scope  
-Claude explains the change, affected files, and diff plan.
+### Step 2 — Confirm the scope
+Claude explains the change, affected documents, and plan.
 
-### Step 3 — Execute  
-Claude generates code **only after approval**.
+### Step 3 — Execute
+Claude produces output **only after approval**.
 
 ---
 
-## 5. Diff‑First Rules
+## 5. Design Completeness Rule
 
-### Use diffs when:
-- Fixing bugs  
-- Adding small features  
-- Updating logic  
-- Editing documentation  
-- Changing a few lines  
+**A design document must not be submitted for approval if it contains unresolved questions.**
 
-### Use full‑file regeneration when:
-- Creating a new file  
-- Replacing legacy code  
-- Rewriting files under ~200 lines  
-- Major refactors  
-- Structural changes  
+### ARCHITECT must:
+- Complete requirements gathering **before** drafting  
+- Pause and ask if a question arises mid-draft  
+- Propose concrete recommendations when the user cannot answer  
+- Never leave fields blank or write "TBD"  
+
+### Placeholders (only when genuinely unknown until build):
+Each placeholder requires **all four fields**:
+
+| Field | Description |
+|---|---|
+| **What** | What is unknown or deferred |
+| **Why** | Why it cannot be resolved before build |
+| **When** | What build stage will resolve it |
+| **Interim assumption** | What the design assumes in the meantime |
+
+### Not permitted in any design document:
+- "TBD"  
+- "To be determined"  
+- "To be confirmed"  
+- Blank fields  
+- Vague future references  
+
+### If you see open questions in a design:
+```
+<task>Stop. This design is incomplete.</task>
+<constraints>
+- Return to requirements gathering
+- Resolve all open questions before producing a new draft
+- Do not resubmit until all fields are complete or valid placeholders with all four required fields
+</constraints>
+```
 
 ---
 
 ## 6. Safe Request Templates
 
-### New Feature
+### New Feature (Strategist)
 ```
-New feature request:
-<feature>
-User outcome:
-<outcome>
+<context>
+Feature: [describe the feature]
+User outcome: [what the user experiences]
+</context>
 
-Act as ENGINEER.
-Explain before you change.
-Provide a diff plan.
-Wait for my confirmation.
-```
+<role>STRATEGIST</role>
 
-### Bug Fix
-```
-Bug fix:
-<bug>
-Expected:
-<expected>
-Actual:
-<actual>
+<task>Assess architectural impact and add to Improvements.md.</task>
 
-Act as ENGINEER.
-Explain root cause.
-Provide a diff plan.
-Wait for my confirmation.
+<constraints>
+- Align with active Design-vX.md
+- Do not treat as approved until I confirm
+- Wait for my confirmation
+</constraints>
 ```
 
-### Refactor
+### Architecture Change (Architect)
 ```
-Refactor request:
-<goal>
-Non-goals:
-<what must not change>
+<context>
+Change: [describe the change]
+Reason: [why this change is needed]
+</context>
 
-Act as ENGINEER.
-Explain the refactor.
-Provide a diff plan.
-```
+<role>ARCHITECT</role>
 
-### Modify Existing File
-```
-Modify file: <path>
-Change: <description>
-Scope: <minimal/moderate/major>
+<task>Assess implications and propose updated architecture.</task>
 
-Act as ENGINEER.
-Explain the change.
-Provide a diff plan.
+<constraints>
+- Resolve all questions before producing a draft
+- Do not submit a design with open questions
+- Wait for my confirmation
+</constraints>
 ```
 
-### New File
+### Reverse‑Engineering (Architect)
 ```
-Create a new file:
-<path>
+<context>File to analyse: [path]</context>
 
-Purpose:
-<purpose>
+<role>ARCHITECT</role>
 
-Act as ENGINEER.
-Explain structure.
-Wait for my confirmation.
+<task>Reverse-engineer the specified file.</task>
+
+<format>
+- Summary
+- Purpose and system fit
+- Risks or issues identified
+</format>
+```
+
+### Documentation Update
+```
+<context>
+File: [path]
+Change: [description]
+</context>
+
+<task>Explain the proposed change and wait for my confirmation before modifying anything.</task>
 ```
 
 ---
@@ -150,32 +170,38 @@ Wait for my confirmation.
 
 ### Start a new project
 ```
-We are starting a new project.
+<context>
+Project type: [greenfield/brownfield/rebuild/etc]
+Goal: [high-level outcome]
+Initial scope: [first milestone]
+</context>
 
-Project type: <greenfield/brownfield/rebuild/etc>
-Goal: <high-level outcome>
-Initial scope: <first milestone>
+<role>ARCHITECT</role>
 
-Act as ARCHITECT.
-Confirm project type.
-Summarise architecture.
-Identify missing information.
-Wait for my confirmation.
+<task>Confirm project type and begin requirements gathering.</task>
+
+<constraints>
+- Do not draft a design until all requirements are resolved
+- Ask clarifying questions until everything is known
+- Wait for my confirmation
+</constraints>
 ```
 
 ### Move to planning
 ```
-Act as STRATEGIST.
-Break into phases, sprints, and tasks.
-Wait for my confirmation.
+<role>STRATEGIST</role>
+<task>Review the approved Design-vX.md and produce Improvements.md.</task>
+<constraints>
+- Align all items with the active design
+- Wait for my confirmation
+</constraints>
 ```
 
-### Move to implementation
+### Initiate Claude Code handoff
 ```
-Act as ENGINEER.
-Begin with the first approved task.
-Explain before you change anything.
-Wait for my confirmation.
+<context>Design and planning documents are approved and locked.</context>
+<task>Confirm the handoff folder is ready for Claude Code.</task>
+<constraints>Follow the process defined in Handoff.md.</constraints>
 ```
 
 ---
@@ -186,17 +212,19 @@ Claude is drifting if it:
 
 - Forgets architecture  
 - Asks for files that exist  
-- Rewrites entire files unexpectedly  
 - Contradicts earlier decisions  
 - Misinterprets instructions  
 - Hallucinates file structure  
+- Produces designs with open questions  
 
 **Fix immediately:**
 
 ```
-Re-anchor to instructions.
-Summarise the architecture.
-Summarise the current task.
+<task>Re-anchor to instructions.</task>
+<constraints>
+- Summarise the architecture
+- Summarise the current task
+</constraints>
 ```
 
 ---
@@ -207,31 +235,114 @@ Summarise the current task.
 - Avoid long conversations  
 - Avoid re‑explaining context  
 - Never re‑upload files unless changed externally  
-- Move brainstorming to personal chats  
+- Move brainstorming to a separate chat  
 - Use micro‑tasks  
-- Avoid unnecessary full‑file rewrites  
 
 ---
 
 ## 10. Never‑Do List
 
 - Never brainstorm inside the Project  
-- Never paste large code blocks unless required  
+- Never paste large content blocks unless required  
 - Never request vague changes  
-- Never skip diff plans  
-- Never mix exploration with implementation  
 - Never let conversations run too long without resets  
+- Never approve a design with open questions or TBD fields  
+- Never mix exploration with planning  
 
 ---
 
-## 11. Glossary (Quick)
+## 11. Glossary
 
-**Reset context** — Start a new chat inside the same Project.  
-**Diff** — A minimal set of changes to a file.  
-**Refactor** — Improve code without changing behaviour.  
+**Reset context** — Start a new chat inside the same Project. Clears conversation history, preserves all files.  
+**Placeholder** — A design entry deferred to build time. Requires What, Why, When, and Interim Assumption.  
 **Snapshot** — A point‑in‑time capture of architecture or state.  
-**Checkpoint** — A summary of what was done and what’s next.  
+**Checkpoint** — A summary of what was done and what's next.  
 **Architecture summary** — A stable reference describing system structure.  
-**Design‑vX.md** — Immutable architecture version.  
+**Design‑vX.md** — Immutable, approved architecture version.  
+**Handoff** — Approved documents passed to Claude Code for implementation.  
+**Design Completeness Rule** — No design may be approved while it contains unresolved questions.
 
 ---
+
+## 12. Claude Code Quick Reference
+
+### Session start prompt
+```
+<context>
+Project documents are in this folder.
+Active design: [Design-vX.md — specify version]
+</context>
+
+<task>
+Read all project documents:
+1. Design-vX.md (active version)
+2. Improvements.md
+3. CLAUDE.md
+4. Handoff.md
+5. Supporting documents
+
+Confirm your understanding of the architecture.
+Ask me which task to begin.
+</task>
+
+<constraints>
+- Do not write any code until I confirm
+- Ask if anything is ambiguous or conflicting
+</constraints>
+```
+
+### Assign a task
+```
+<context>
+Active design: [Design-vX.md version]
+</context>
+
+<task>Implement this approved task from Improvements.md: [task title]</task>
+
+<constraints>
+- Follow active Design-vX.md exactly
+- Follow acceptance criteria in Improvements.md
+- State approach and affected files before coding
+- Wait for my confirmation
+</constraints>
+```
+
+### Stop a deviation
+```
+<task>Stop. Explain the deviation from the agreed approach.</task>
+<constraints>Do not make further changes until I confirm the correct path.</constraints>
+```
+
+### Handle a gap discovery
+```
+<task>Stop the current implementation.</task>
+<constraints>
+- Document the issue: what was discovered, why it needs a decision, what the options are
+- Do not proceed until I decide
+</constraints>
+```
+
+Then return to Claude Projects with:
+```
+<context>Claude Code discovered the following issue: [paste issue]</context>
+
+<role>ARCHITECT</role>
+
+<task>Assess whether this requires a design change.</task>
+
+<constraints>
+- Produce updated design if needed
+- Wait for my confirmation before locking
+</constraints>
+```
+
+### CLAUDE.md rules
+- Copy to codebase root before first Claude Code session
+- Update `<version_reference>` whenever the active design version changes
+- Claude Code reads it automatically at session start
+
+### Never do in Claude Code
+- Give verbal architecture instructions — put them in documents
+- Skip the session-start document read
+- Approve output without checking scope boundaries
+- Let Claude Code proceed past a gap without a decision

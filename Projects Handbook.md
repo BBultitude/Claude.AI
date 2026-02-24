@@ -1,3 +1,4 @@
+# Projects Handbook
 ### *Unified Operational Guide for CIOs, Engineers, and Non‑Developers*  
 ### *Using `project_instructions.txt` + `INSTRUCTIONS.md`*
 
@@ -7,11 +8,11 @@
 
 1. [Introduction](#1-introduction)
 
-2. [How Claude Projects Actually Works](#2-how-claude-projects-actually-works-medium-depth-overview)  
+2. [How Claude Projects Actually Works](#2-how-claude-projects-actually-works)  
    - [2.1 Files Are Stored Server‑Side](#21-files-are-stored-server-side)  
    - [2.2 Project Instructions Are Auto‑Loaded](#22-project-instructions-are-auto-loaded)  
    - [2.3 Claude Uses a Prioritised Context Model](#23-claude-uses-a-prioritised-context-model)  
-   - [2.4 Claude Does Not “Remember Everything”](#24-claude-does-not-remember-everything)  
+   - [2.4 Claude Does Not "Remember Everything"](#24-claude-does-not-remember-everything)  
    - [2.5 Claude Is Most Efficient When Tasks Are Small](#25-claude-is-most-efficient-when-tasks-are-small)
 
 3. [Understanding Token Usage](#3-understanding-token-usage)  
@@ -21,7 +22,7 @@
    - [3.4 Re‑Explaining Context](#34-re-explaining-context)  
    - [3.5 Re‑Uploading Files](#35-re-uploading-files)
 
-4. [Understanding the Context Window (Chat Length Limit)](#4-understanding-the-context-window-chat-length-limit)  
+4. [Understanding the Context Window](#4-understanding-the-context-window)  
    - [4.1 What the Context Window Is](#41-what-the-context-window-is)  
    - [4.2 How Claude Manages Context](#42-how-claude-manages-context)  
    - [4.3 How Context Overload Increases Token Usage](#43-how-context-overload-increases-token-usage)  
@@ -30,76 +31,71 @@
    - [4.6 How to Prevent Context Overload](#46-how-to-prevent-context-overload)  
    - [4.7 Best Practices for Long‑Running Projects](#47-best-practices-for-long-running-projects)
 
-5. [Your Instruction System (How It Works)](#5-your-instruction-system-how-it-works)  
+5. [Your Instruction System](#5-your-instruction-system)  
    - [5.1 `project_instructions.txt`](#51-project_instructionstxt)  
    - [5.2 `INSTRUCTIONS.md`](#52-instructionsmd)  
    - [5.3 Roles](#53-roles)  
    - [5.4 Workflow Modes](#54-workflow-modes)  
    - [5.5 Design Versioning](#55-design-versioning)  
    - [5.6 Improvements Tracking](#56-improvements-tracking)  
-   - [5.7 Architecture Summaries](#57-architecture-summaries)
+   - [5.7 Architecture Summaries](#57-architecture-summaries)  
+   - [5.8 Claude Code Handoff](#58-claude-code-handoff)
 
-6. [Starting a New Project (Step‑by‑Step)](#6-starting-a-new-project-step-by-step)  
-   - [6.1 Upload Your Files](#61-upload-your-files)  
-   - [6.2 Confirm Project Instructions Are Loaded](#62-confirm-project-instructions-are-loaded)  
-   - [6.3 Send the First Message (Template)](#63-send-the-first-message-template)  
-   - [6.4 Confirm the Architecture](#64-confirm-the-architecture)  
-   - [6.5 Move to STRATEGIST Mode](#65-move-to-strategist-mode)  
-   - [6.6 Move to ENGINEER Mode](#66-move-to-engineer-mode)  
-   - [6.7 Establish the First Task](#67-establish-the-first-task)
+6. [Design Completeness Rule](#6-design-completeness-rule)  
+   - [6.1 Why This Rule Exists](#61-why-this-rule-exists)  
+   - [6.2 What Must Be Resolved Before Design](#62-what-must-be-resolved-before-design)  
+   - [6.3 How to Handle Genuinely Unknown Items](#63-how-to-handle-genuinely-unknown-items)  
+   - [6.4 What Is Not Permitted](#64-what-is-not-permitted)  
+   - [6.5 How This Affects the Architect Workflow](#65-how-this-affects-the-architect-workflow)
 
-7. [Working With Claude Effectively](#7-working-with-claude-effectively)  
-   - [7.1 The “Feature‑First” Workflow](#71-the-feature-first-workflow)  
-   - [7.2 The “Explain Before You Change” Rule](#72-the-explain-before-you-change-rule)  
-   - [7.3 The “Diff‑First” Rule](#73-the-diff-first-rule)  
-   - [7.4 When to Regenerate Full Files](#74-when-to-regenerate-full-files)  
-   - [7.5 When to Request Partial Changes](#75-when-to-request-partial-changes)  
-   - [7.6 How to Avoid Accidental Full Rewrites](#76-how-to-avoid-accidental-full-rewrites)  
-   - [7.7 Keeping Claude Anchored to Instructions](#77-keeping-claude-anchored-to-instructions)
+7. [Starting a New Project](#7-starting-a-new-project)  
+   - [7.1 Upload Your Files](#71-upload-your-files)  
+   - [7.2 Confirm Project Instructions Are Loaded](#72-confirm-project-instructions-are-loaded)  
+   - [7.3 Send the First Message](#73-send-the-first-message)  
+   - [7.4 Confirm the Architecture](#74-confirm-the-architecture)  
+   - [7.5 Move to STRATEGIST Mode](#75-move-to-strategist-mode)  
+   - [7.6 Initiate the Claude Code Handoff](#76-initiate-the-claude-code-handoff)
 
-8. [Requesting Changes (Templates & Examples)](#8-requesting-changes-templates--examples)  
-   - [8.1 New Feature Request](#81-new-feature-request)  
-   - [8.2 Bug Fix](#82-bug-fix)  
-   - [8.3 Refactor](#83-refactor)  
-   - [8.4 New File](#84-new-file)  
-   - [8.5 Modify Existing File](#85-modify-existing-file)  
-   - [8.6 Reverse‑Engineering](#86-reverse-engineering)  
-   - [8.7 Architecture Changes](#87-architecture-changes)  
-   - [8.8 Documentation Updates](#88-documentation-updates)
+8. [Working With Claude Effectively](#8-working-with-claude-effectively)  
+   - [8.1 The "Feature‑First" Workflow](#81-the-feature-first-workflow)  
+   - [8.2 The "Explain Before You Change" Rule](#82-the-explain-before-you-change-rule)  
+   - [8.3 Keeping Claude Anchored to Instructions](#83-keeping-claude-anchored-to-instructions)
 
-9. [Managing Large Projects](#9-managing-large-projects)  
-   - [9.1 Architecture Summaries](#91-architecture-summaries)  
-   - [9.2 Design Versioning (Design‑vX.md)](#92-design-versioning-design-vxmd)  
-   - [9.3 Improvements Tracking](#93-improvements-tracking)  
-   - [9.4 Snapshots](#94-snapshots)  
-   - [9.5 Checkpoints](#95-checkpoints)  
-   - [9.6 Resetting Context Safely](#96-resetting-context-safely)  
-   - [9.7 Avoiding Drift in Large Projects](#97-avoiding-drift-in-large-projects)
+9. [Requesting Changes](#9-requesting-changes)  
+   - [9.1 New Feature Request](#91-new-feature-request)  
+   - [9.2 Reverse‑Engineering](#92-reverse-engineering)  
+   - [9.3 Architecture Changes](#93-architecture-changes)  
+   - [9.4 Documentation Updates](#94-documentation-updates)
 
-10. [Troubleshooting & Recovery](#10-troubleshooting--recovery)  
-    - [10.1 Claude Rewrote a File Unexpectedly](#101-claude-rewrote-a-file-unexpectedly)  
-    - [10.2 Claude Forgot the Architecture](#102-claude-forgot-the-architecture)  
-    - [10.3 Claude Hallucinated File Structure](#103-claude-hallucinated-file-structure)  
-    - [10.4 Claude Is Asking for Files That Exist](#104-claude-is-asking-for-files-that-exist)  
-    - [10.5 Claude Is Contradicting Earlier Decisions](#105-claude-is-contradicting-earlier-decisions)  
-    - [10.6 Claude Is Drifting From Instructions](#106-claude-is-drifting-from-instructions)  
-    - [10.7 Claude Is Generating Too Much Code](#107-claude-is-generating-too-much-code)  
-    - [10.8 Claude Is Burning Tokens Too Fast](#108-claude-is-burning-tokens-too-fast)
+10. [Managing Large Projects](#10-managing-large-projects)  
+    - [10.1 Architecture Summaries](#101-architecture-summaries)  
+    - [10.2 Design Versioning](#102-design-versioning)  
+    - [10.3 Improvements Tracking](#103-improvements-tracking)  
+    - [10.4 Snapshots](#104-snapshots)  
+    - [10.5 Checkpoints](#105-checkpoints)  
+    - [10.6 Resetting Context Safely](#106-resetting-context-safely)  
+    - [10.7 Avoiding Drift in Large Projects](#107-avoiding-drift-in-large-projects)
 
-11. [Quick‑Use Cheat Sheet](#11-quick-use-cheat-sheet)  
-    - [11.1 The 10 Token‑Safe Rules](#111-the-10-token-safe-rules)  
-    - [11.2 The 3‑Step Task Workflow](#112-the-3-step-task-workflow)  
-    - [11.3 The 4 Most Important Commands](#113-the-4-most-important-commands)  
-    - [11.4 Regenerate vs Diff Decision Tree](#114-regenerate-vs-diff-decision-tree)  
-    - [11.5 Safe Message Templates](#115-safe-message-templates)  
-    - [11.6 Context Window Rules](#116-context-window-rules)  
-    - [11.7 Drift Indicators](#117-drift-indicators)  
-    - [11.8 Reset Procedure](#118-reset-procedure)  
-    - [11.9 Never‑Do List](#119-never-do-list)
+11. [Troubleshooting & Recovery](#11-troubleshooting--recovery)  
+    - [11.1 Claude Rewrote a Document Unexpectedly](#111-claude-rewrote-a-document-unexpectedly)  
+    - [11.2 Claude Forgot the Architecture](#112-claude-forgot-the-architecture)  
+    - [11.3 Claude Hallucinated File Structure](#113-claude-hallucinated-file-structure)  
+    - [11.4 Claude Is Asking for Files That Exist](#114-claude-is-asking-for-files-that-exist)  
+    - [11.5 Claude Is Contradicting Earlier Decisions](#115-claude-is-contradicting-earlier-decisions)  
+    - [11.6 Claude Is Drifting From Instructions](#116-claude-is-drifting-from-instructions)  
+    - [11.7 Claude Left Open Questions in a Design](#117-claude-left-open-questions-in-a-design)
 
-12. [Glossary (Non‑Developer Friendly)](#12-glossary-non-developer-friendly)
+12. [Working With Claude Code](#12-working-with-claude-code)  
+    - [12.1 What Claude Code Receives](#121-what-claude-code-receives)  
+    - [12.2 Setting Up CLAUDE.md](#122-setting-up-claudemd)  
+    - [12.3 Starting a Claude Code Session](#123-starting-a-claude-code-session)  
+    - [12.4 Assigning a Task](#124-assigning-a-task)  
+    - [12.5 Reviewing Claude Code Output](#125-reviewing-claude-code-output)  
+    - [12.6 When Claude Code Discovers a Gap](#126-when-claude-code-discovers-a-gap)  
+    - [12.7 Keeping CLAUDE.md Current](#127-keeping-claudemd-current)  
+    - [12.8 The Full Lifecycle Loop](#128-the-full-lifecycle-loop)
 
-13. [Final Notes](#13-final-notes)
+13. [Glossary](#13-glossary)
 
 ---
 
@@ -123,20 +119,22 @@ This document explains:
 - How to manage large projects  
 - How to troubleshoot issues  
 - How to keep Claude predictable and efficient  
+- How Claude Code receives and uses the approved design documents  
 
 It is designed to work **100% in tandem** with:
 
 - `project_instructions.txt`  
 - `INSTRUCTIONS.md`  
+- `Handoff.md`  
 
-These two files define how Claude behaves.  
+These files define how Claude behaves.  
 This handbook defines how **you** use Claude.
 
 Together, they form a complete, repeatable, scalable development workflow.
 
 ---
 
-# 2. How Claude Projects Actually Works (Medium‑Depth Overview)
+# 2. How Claude Projects Actually Works
 
 Claude Projects is not just a chat.  
 It is a **persistent workspace** where Claude:
@@ -157,8 +155,7 @@ When you upload files to a Project:
 
 - Claude stores them permanently  
 - Claude can reference them without re‑uploading  
-- Claude does not need you to paste code repeatedly  
-- Claude can regenerate files without re‑reading the entire project  
+- Claude does not need you to paste content repeatedly  
 
 This is why Projects mode is dramatically more efficient than normal chats.
 
@@ -168,7 +165,7 @@ This is why Projects mode is dramatically more efficient than normal chats.
 
 Claude automatically loads:
 
-- `project_instructions.txt` **every message**  
+- `project_instructions.txt` every message  
 - Any files you explicitly reference  
 - Any files Claude needs to complete a task  
 
@@ -196,15 +193,11 @@ Claude prioritises:
 5. Recent conversation history  
 6. Older conversation history (compressed)
 
-This is why:
-
-- Short, clear messages work best  
-- Long conversations cause drift  
-- Resetting context periodically is essential  
+This is why short, clear messages work best and long conversations cause drift.
 
 ---
 
-## 2.4 Claude Does Not “Remember Everything”
+## 2.4 Claude Does Not "Remember Everything"
 
 Claude does **not** store:
 
@@ -221,7 +214,6 @@ This is why:
 - Architecture summaries matter  
 - Design documents matter  
 - Improvements.md matters  
-- Snapshots matter  
 
 ---
 
@@ -231,10 +223,7 @@ Claude performs best when:
 
 - Tasks are broken into micro‑tasks  
 - Only relevant files are touched  
-- Only necessary code is generated  
-- You avoid full‑file rewrites unless needed  
-
-This handbook teaches you how to structure tasks to maximise efficiency.
+- Only necessary content is generated  
 
 ---
 
@@ -247,146 +236,67 @@ Token usage is influenced by:
 - How often Claude re‑reads files  
 - How often Claude re‑summarises context  
 - How often Claude re‑anchors to instructions  
-- How often Claude rewrites entire files  
-
-Below is a breakdown of what consumes tokens and how to avoid unnecessary usage.
 
 ---
 
 ## 3.1 Full‑File Regeneration
 
-**High cost.**
-
-Claude must:
-
-- Read the entire file  
-- Generate the entire file  
-- Validate the file  
-- Re‑anchor the file into the project  
-
-Use only when:
+**High cost.** Use only when:
 
 - Creating new files  
 - Replacing legacy files  
 - Rewriting files under ~200 lines  
 - Performing major refactors  
 
-Avoid when:
-
-- Making small changes  
-- Fixing bugs  
-- Adding small features  
+Avoid when making small changes.
 
 ---
 
 ## 3.2 Brainstorming Inside the Project
 
-**Very high cost.**
+**Very high cost.** When you brainstorm inside a Project, Claude loads the entire project context and tries to relate ideas to existing documents.
 
-When you brainstorm inside a Project:
-
-- Claude loads the entire project context  
-- Claude tries to relate ideas to the codebase  
-- Claude may re‑read files  
-- Claude may re‑interpret instructions  
-
-This burns tokens rapidly.
-
-**Solution:**  
-Do all brainstorming in a **separate personal chat**, then bring the final decision into the Project.
+**Solution:** Do all brainstorming in a **separate chat**, then bring the final decision into the Project.
 
 ---
 
 ## 3.3 Long Conversations
 
-**High cost.**
+**High cost.** As conversations grow, Claude compresses older messages, re‑summarises context, and may re‑read files.
 
-As conversations grow:
-
-- Claude compresses older messages  
-- Claude re‑summarises context  
-- Claude re‑anchors to instructions  
-- Claude may re‑read files  
-
-This increases token usage and risk of drift.
-
-**Solution:**  
-Reset context every **20–30 messages**.
+**Solution:** Reset context every **20–30 messages**.
 
 ---
 
 ## 3.4 Re‑Explaining Context
 
-**Moderate to high cost.**
-
-If Claude forgets something and you re‑explain it:
-
-- You burn tokens  
-- Claude burns tokens re‑processing it  
-
-**Solution:**  
-Use:
+**Moderate to high cost.** Use:
 
 ```
-Re-anchor to instructions.
-Summarise the architecture.
-Summarise the current task.
+<task>Re-anchor to instructions.</task>
+<constraints>
+- Summarise the architecture
+- Summarise the current task
+</constraints>
 ```
 
 ---
 
 ## 3.5 Re‑Uploading Files
 
-**Very high cost.**
-
-Uploading files forces Claude to:
-
-- Re‑read them  
-- Re‑index them  
-- Re‑anchor them  
-
-This is unnecessary in Projects mode.
-
-**Solution:**  
-Never re‑upload files unless they changed outside Claude.
+**Very high cost.** Never re‑upload files unless they changed outside Claude.
 
 ---
 
-# 4. Understanding the Context Window (Chat Length Limit)
+# 4. Understanding the Context Window
 
-The context window is the **maximum amount of information Claude can hold at once**.  
-When the window fills, Claude must compress older content, which leads to:
-
-- Drift  
-- Mistakes  
-- Token spikes  
-- Unnecessary rewrites  
-- Confusion  
-- Loss of architectural understanding  
-
-This section explains how to manage it safely.
+The context window is the **maximum amount of information Claude can hold at once**. When the window fills, Claude must compress older content, which leads to drift, mistakes, and token spikes.
 
 ---
 
 ## 4.1 What the Context Window Is
 
-Claude can only “hold” a certain amount of text in memory at once.
-
-This includes:
-
-- Your messages  
-- Claude’s messages  
-- Loaded files  
-- Instructions  
-- Summaries  
-- Code  
-- Explanations  
-
-When the window fills:
-
-- Claude compresses older content  
-- Compression removes detail  
-- Loss of detail causes drift  
+Claude can only hold a certain amount of text in memory at once — your messages, Claude's messages, loaded files, instructions, summaries, and code. When the window fills, Claude compresses older content, losing detail and causing drift.
 
 ---
 
@@ -401,28 +311,11 @@ Claude prioritises:
 5. Recent conversation  
 6. Older conversation (compressed)
 
-This means:
-
-- Long chats cause drift  
-- Large messages cause drift  
-- Large files cause drift  
-- Repeated brainstorming causes drift  
-
 ---
 
 ## 4.3 How Context Overload Increases Token Usage
 
-When Claude’s context window fills, Claude must:
-
-- Re‑summarise older content  
-- Re‑interpret instructions  
-- Re‑read files  
-- Re‑anchor architecture  
-- Re‑anchor workflow modes  
-
-Each of these operations consumes tokens.
-
-This is why long chats burn through weekly limits.
+When Claude's context window fills, Claude must re‑summarise, re‑interpret instructions, re‑read files, and re‑anchor architecture. Each operation consumes tokens.
 
 ---
 
@@ -433,11 +326,8 @@ You will notice overload when Claude:
 - Asks questions it already asked  
 - Forgets architecture  
 - Misinterprets instructions  
-- Rewrites entire files instead of diffing  
 - Asks for files that exist  
 - Contradicts earlier decisions  
-- Loses track of workflow mode  
-- Loses track of role  
 - Starts hallucinating file structure  
 
 When you see these signs, reset context immediately.
@@ -446,22 +336,24 @@ When you see these signs, reset context immediately.
 
 ## 4.5 How to Reset Context Safely
 
-Use this exact message:
+```
+<task>Reset context.</task>
+<constraints>
+- Reload project_instructions.txt
+- Do not re-read all files
+- Ask me what we are working on before proceeding
+</constraints>
+```
+
+Then:
 
 ```
-Reset context.
-Reload project_instructions.txt.
-Do not re-read all files.
-Ask me what we are working on.
-```
-
-Then follow with:
-
-```
-Re-anchor to instructions.
-Summarise the architecture.
-Summarise the current task.
-Wait for my confirmation.
+<task>Re-anchor to instructions.</task>
+<constraints>
+- Summarise the architecture
+- Summarise the current task
+- Wait for my confirmation before proceeding
+</constraints>
 ```
 
 ---
@@ -470,13 +362,9 @@ Wait for my confirmation.
 
 - Reset every 20–30 messages  
 - Keep tasks small  
-- Use micro‑tasks  
-- Avoid long back‑and‑forths in ENGINEER mode  
+- Avoid long back‑and‑forths  
 - Move brainstorming to a separate chat  
 - Keep architecture summaries updated  
-- Use “Explain Before You Change”  
-- Use “Diff‑First”  
-- Avoid unnecessary full‑file rewrites  
 
 ---
 
@@ -487,26 +375,14 @@ Wait for my confirmation.
 - Keep Improvements.md updated  
 - Reset context regularly  
 - Re‑anchor Claude after resets  
-- Avoid mixing exploration with implementation  
+- Avoid mixing exploration with planning  
 - Keep messages short and clear  
-- Avoid pasting large code blocks unless necessary  
 
 ---
 
-# 5. Your Instruction System (How It Works)
+# 5. Your Instruction System
 
-Your instruction system is the backbone of your workflow.  
-It ensures Claude behaves consistently, predictably, and safely.
-
-It consists of:
-
-- `project_instructions.txt`  
-- `INSTRUCTIONS.md`  
-- Roles  
-- Workflow modes  
-- Design versioning  
-- Improvements tracking  
-- Architecture summaries  
+Your instruction system is the backbone of your workflow. It ensures Claude behaves consistently, predictably, and safely.
 
 ---
 
@@ -515,19 +391,9 @@ It consists of:
 This file is:
 
 - Loaded automatically every message  
-- The “operating system” for Claude  
+- The "operating system" for Claude  
 - The source of truth for roles and workflow  
 - The behavioural contract Claude must follow  
-
-It defines:
-
-- Roles (ARCHITECT, STRATEGIST, ENGINEER)  
-- Workflow modes  
-- Safety rules  
-- Output rules  
-- Change‑request rules  
-- Diff rules  
-- Confirmation rules  
 
 ---
 
@@ -554,28 +420,21 @@ Use the template from INSTRUCTIONS.md.
 - High‑level design  
 - System structure  
 - Architecture decisions  
-- File maps  
 - Data models  
+- Security model  
 
 ### **STRATEGIST**
 - No code  
 - Task planning  
-- Sprint planning  
 - Feature breakdown  
+- Prioritisation and sequencing  
 - Dependency mapping  
-
-### **ENGINEER**
-- Writes code  
-- Generates diffs  
-- Regenerates files when needed  
-- Implements tasks  
 
 Switch roles with:
 
 ```
 Act as ARCHITECT.
 Act as STRATEGIST.
-Act as ENGINEER.
 ```
 
 ---
@@ -585,10 +444,10 @@ Act as ENGINEER.
 Claude determines the mode at project start:
 
 - Greenfield  
-- Brownfield  
-- Rebuild  
-- Customisation  
-- Reverse‑engineering  
+- Brownfield (design exists)  
+- Brownfield (no design — reverse‑engineering)  
+- Redesign  
+- Continuous Improvement  
 
 ---
 
@@ -600,11 +459,7 @@ Design documents follow:
 - `Design‑v2.md`  
 - `Design‑v3.md`  
 
-Each version is:
-
-- A snapshot of architecture  
-- A stable reference  
-- Never modified after approval  
+Each version is a stable, locked reference. Never modified after approval.
 
 ---
 
@@ -618,7 +473,7 @@ Each version is:
 - Technical debt  
 - Architecture changes  
 
-Claude uses this to plan work.
+Claude Code reads this for task‑level execution.
 
 ---
 
@@ -635,21 +490,106 @@ Update them after major changes.
 
 ---
 
-# 6. Starting a New Project (Step‑by‑Step)
+## 5.8 Claude Code Handoff
 
-This section provides a clear, repeatable workflow for starting any new Claude Project, regardless of whether it is greenfield, brownfield, a rebuild, or a reverse‑engineering effort.
+When design and planning documents are approved, they are handed off to Claude Code for implementation. Claude Code reads the approved documents from the project folder and derives all architectural context from them.
 
-The goal is to ensure Claude:
-
-- Loads your instruction system correctly  
-- Anchors itself to the correct workflow mode  
-- Understands the project scope  
-- Avoids unnecessary token usage  
-- Begins in a predictable, controlled state  
+See `Handoff.md` for the full boundary definition, folder structure, and Claude Code operating sequence.
 
 ---
 
-## 6.1 Upload Your Files
+# 6. Design Completeness Rule
+
+This is one of the most important rules in the system. More complete designs produce better results in Claude Code with fewer questions and corrections.
+
+---
+
+## 6.1 Why This Rule Exists
+
+A design document with open questions or vague placeholders produces:
+
+- More clarification questions from Claude Code during implementation  
+- Higher risk of Claude Code making incorrect assumptions  
+- More back-and-forth between Projects and Claude Code  
+- Lower quality output  
+
+Every question resolved at the design stage saves multiple questions and corrections at the implementation stage.
+
+---
+
+## 6.2 What Must Be Resolved Before Design
+
+The ARCHITECT must resolve **all** of the following before producing a design document for approval:
+
+- All functional requirements  
+- All non‑functional requirements  
+- Technology choices  
+- Security model  
+- Data model  
+- API contracts  
+- Deployment model  
+- Integration points  
+- Constraints  
+
+If any of these are unknown, the ARCHITECT must continue asking questions until they are resolved.
+
+---
+
+## 6.3 How to Handle Genuinely Unknown Items
+
+Some items genuinely cannot be determined until the build begins — for example, exact performance thresholds that will be measured during load testing, or third-party API response formats that will be confirmed during integration.
+
+These are the only items permitted in the **Placeholders** section of a design document.
+
+Each placeholder **must** include all four fields:
+
+| Field | Description |
+|---|---|
+| **What** | Exactly what is unknown or deferred |
+| **Why** | Why it cannot be resolved before the build begins |
+| **When** | The specific build stage or trigger that will resolve it |
+| **Interim assumption** | The assumption the design makes until it is resolved |
+
+If the user cannot provide an answer, the ARCHITECT must:
+
+1. Propose a concrete, reasoned recommendation  
+2. State the rationale clearly  
+3. Ask the user to accept or reject it  
+
+The design proceeds with the accepted recommendation. It does not proceed with a blank.
+
+---
+
+## 6.4 What Is Not Permitted
+
+The following are **not permitted** in any design document:
+
+- "TBD"  
+- "To be determined"  
+- "To be confirmed"  
+- "This will be decided later"  
+- Blank fields  
+- Vague references to future decisions  
+
+A design with any of these is incomplete and must not be approved or locked.
+
+---
+
+## 6.5 How This Affects the Architect Workflow
+
+The requirements-gathering phase is the primary mechanism for resolving all questions. The ARCHITECT must not begin writing a design document until the requirements phase is complete and all ambiguities are resolved.
+
+If a new question arises during drafting, the ARCHITECT must pause, ask the user, and wait for a response before continuing.
+
+This may feel slower at the design stage. It is significantly faster overall.
+
+---
+
+# 7. Starting a New Project
+
+---
+
+## 7.1 Upload Your Files
 
 Upload:
 
@@ -669,148 +609,86 @@ Upload:
 - Logs  
 - Temporary files  
 
-These waste tokens and slow Claude down.
+---
+
+## 7.2 Confirm Project Instructions Are Loaded
+
+Claude automatically loads `project_instructions.txt` every message. You do not need to paste instructions manually.
 
 ---
 
-## 6.2 Confirm Project Instructions Are Loaded
-
-Claude automatically loads:
-
-- `project_instructions.txt` every message  
-- Any files you reference explicitly  
-
-You do **not** need to paste instructions manually.
-
----
-
-## 6.3 Send the First Message (Template)
-
-Use this exact template:
+## 7.3 Send the First Message
 
 ```
+<context>
 We are starting a new project.
+Project type: [greenfield / brownfield / rebuild / reverse-engineering]
+High-level goal: [describe the outcome]
+Initial scope: [describe what we want to achieve first]
+Files uploaded: [list them or say "uploaded"]
+</context>
 
-Here is the project type: <greenfield / brownfield / rebuild / reverse-engineering / customisation>.
-Here is the high-level goal: <describe the outcome>.
-Here is the initial scope: <describe what we want to achieve first>.
-Here are the files I uploaded: <list them or say “uploaded”>.
+<role>ARCHITECT</role>
 
-Act as ARCHITECT.
-Confirm the project type.
-Summarise the initial architecture.
-Identify missing information.
-Wait for my confirmation before proceeding.
-```
+<task>Confirm the project type and begin requirements gathering.</task>
 
-This ensures Claude:
-
-- Anchors to the correct role  
-- Anchors to the correct workflow mode  
-- Does not generate code prematurely  
-- Does not assume missing details  
-- Starts with architecture, not implementation  
-
----
-
-## 6.4 Confirm the Architecture
-
-Claude will respond with:
-
-- A project type confirmation  
-- A high‑level architecture  
-- A file map  
-- A list of unknowns or missing information  
-
-Review this carefully.
-
-If correct, respond:
-
-```
-Confirmed. Proceed.
-```
-
-If incorrect, respond:
-
-```
-Correct the architecture as follows:
-<list corrections>
+<constraints>
+- Do not produce a design document until all requirements are resolved
+- Ask clarifying questions until every requirement is known
+- Wait for my confirmation before proceeding
+</constraints>
 ```
 
 ---
 
-## 6.5 Move to STRATEGIST Mode
+## 7.4 Confirm the Architecture
 
-Once architecture is confirmed:
+Claude will respond with a requirements summary and questions. Answer all questions. Claude will not produce a design document until all questions are resolved.
 
-```
-Act as STRATEGIST.
-Break the project into phases, sprints, and tasks.
-Wait for my confirmation.
-```
+Once the design is produced:
 
-Claude will produce:
+- Review carefully  
+- Check that no "TBD" or open questions appear  
+- Confirm or correct  
 
-- A multi‑phase plan  
-- Sprint breakdowns  
-- Task lists  
-- Dependencies  
-- Priorities  
-
-Confirm or correct as needed.
-
----
-
-## 6.6 Move to ENGINEER Mode
-
-Once planning is approved:
+If correct:
 
 ```
-Act as ENGINEER.
-Begin with the first approved task.
-Explain before you change anything.
-Wait for my confirmation before generating code.
-```
-
-This ensures:
-
-- No premature code generation  
-- No accidental full‑file rewrites  
-- No misinterpretation of scope  
-
----
-
-## 6.7 Establish the First Task
-
-Claude will propose:
-
-- The first task  
-- The files involved  
-- The expected changes  
-- The diff plan  
-
-Confirm with:
-
-```
-Approved. Proceed.
-```
-
-Or correct with:
-
-```
-Adjust the task as follows:
-<corrections>
+<task>Confirmed. Lock Design-v1.md as the approved baseline architecture.</task>
 ```
 
 ---
 
-# 7. Working With Claude Effectively
+## 7.5 Move to STRATEGIST Mode
 
-This section defines the operational rules that keep Claude predictable, efficient, and aligned with your instruction system.
+```
+<role>STRATEGIST</role>
+<task>Review the approved Design-v1.md and produce Improvements.md.</task>
+<constraints>
+- Align all items with the active design
+- Wait for my confirmation before finalising
+</constraints>
+```
 
 ---
 
-## 7.1 The “Feature‑First” Workflow
+## 7.6 Initiate the Claude Code Handoff
+
+```
+<context>Design and planning documents are approved and locked.</context>
+<task>Confirm the handoff folder is ready for Claude Code.</task>
+<constraints>Follow the process defined in Handoff.md.</constraints>
+```
+
+Claude Code will then read the documents from the project folder.
+
+---
+
+# 8. Working With Claude Effectively
+
+---
+
+## 8.1 The "Feature‑First" Workflow
 
 Every task should begin with:
 
@@ -819,792 +697,518 @@ Every task should begin with:
 - The user outcome  
 - The acceptance criteria  
 
-Never begin with:
-
-- “Write code to…”  
-- “Modify file X…”  
-- “Add a function…”  
-
-Claude must understand the **intent** before touching code.
+Never begin with implementation details. Claude must understand the intent before touching any document.
 
 ---
 
-## 7.2 The “Explain Before You Change” Rule
+## 8.2 The "Explain Before You Change" Rule
 
-Before Claude modifies any file, it must:
+Before Claude modifies any document, it must:
 
 1. Explain the change  
-2. Identify the affected files  
-3. Provide a diff plan  
-4. Wait for your approval  
+2. Identify the affected sections  
+3. Wait for your approval  
 
-This prevents:
-
-- Accidental rewrites  
-- Misinterpretation  
-- Token spikes  
-- Architecture drift  
+This prevents accidental rewrites and misinterpretation.
 
 ---
 
-## 7.3 The “Diff‑First” Rule
-
-Claude must always:
-
-- Provide diffs for small or moderate changes  
-- Only regenerate full files when necessary  
-
-Use this command:
-
-```
-Provide a diff plan before generating code.
-```
-
----
-
-## 7.4 When to Regenerate Full Files
-
-Full regeneration is appropriate when:
-
-- Creating a new file  
-- Replacing a legacy file  
-- Rewriting a file under ~200 lines  
-- Performing a major refactor  
-- Fixing structural issues  
-- Cleaning up inconsistent formatting  
-
-Avoid full regeneration when:
-
-- Fixing small bugs  
-- Adding small features  
-- Making minor adjustments  
-- Updating a few lines  
-
----
-
-## 7.5 When to Request Partial Changes
-
-Use partial changes when:
-
-- Only a function needs updating  
-- Only a block of logic changes  
-- Only a few lines need modification  
-- Only documentation needs updating  
-
-Use:
-
-```
-Show me the diff for only the affected sections.
-```
-
----
-
-## 7.6 How to Avoid Accidental Full Rewrites
-
-Never say:
-
-- “Rewrite this file”  
-- “Replace this file”  
-- “Update this file” (too vague)  
-- “Fix this file” (too vague)  
-
-Instead say:
-
-```
-Modify only the following sections:
-<list sections>
-```
-
-Or:
-
-```
-Provide a diff for the minimal required changes.
-```
-
----
-
-## 7.7 Keeping Claude Anchored to Instructions
+## 8.3 Keeping Claude Anchored to Instructions
 
 If Claude drifts:
 
 ```
-Re-anchor to instructions.
-Summarise the architecture.
-Summarise the current task.
-Wait for my confirmation.
+<task>Re-anchor to instructions.</task>
+<constraints>
+- Summarise the architecture
+- Summarise the current task
+- Wait for my confirmation before proceeding
+</constraints>
 ```
-
-This resets Claude’s internal state without resetting the entire context.
 
 ---
 
-# 8. Requesting Changes (Templates & Examples)
-
-This section provides **copy‑ready templates** for every type of change request.
+# 9. Requesting Changes
 
 ---
 
-## 8.1 New Feature Request
+## 9.1 New Feature Request
 
 ```
-New feature request.
-
-Feature: <describe the feature>.
-User outcome: <describe what the user experiences>.
+<context>
+Feature: [describe the feature]
+User outcome: [describe what the user experiences]
 Acceptance criteria:
-- <criterion 1>
-- <criterion 2>
-- <criterion 3>
+- [criterion 1]
+- [criterion 2]
+</context>
 
-Act as ENGINEER.
-Explain the change.
-Identify affected files.
-Provide a diff plan.
-Wait for my confirmation.
+<role>STRATEGIST</role>
+
+<task>Assess the architectural impact and add this feature to Improvements.md.</task>
+
+<constraints>
+- Align with the active Design-vX.md
+- Do not treat as approved until I confirm
+- Wait for my confirmation
+</constraints>
 ```
 
 ---
 
-## 8.2 Bug Fix
+## 9.2 Reverse‑Engineering
 
 ```
-Bug fix request.
+<context>File to analyse: [file path]</context>
 
-Bug: <describe the bug>.
-Expected behaviour: <describe correct behaviour>.
-Actual behaviour: <describe incorrect behaviour>.
-Steps to reproduce:
-1. …
-2. …
-3. …
+<role>ARCHITECT</role>
 
-Act as ENGINEER.
-Explain the root cause.
-Identify affected files.
-Provide a diff plan.
-Wait for my confirmation.
+<task>Reverse-engineer the specified file.</task>
+
+<format>
+- Summary of the file
+- Purpose and how it fits the system
+- Identified risks or issues
+</format>
 ```
 
 ---
 
-## 8.3 Refactor
+## 9.3 Architecture Changes
 
 ```
-Refactor request.
+<context>
+Change: [describe the change]
+Reason: [why this change is needed]
+Expected impact: [what will be affected]
+</context>
 
-Goal: <describe the purpose>.
-Scope: <describe what should change>.
-Non-goals: <describe what must NOT change>.
+<role>ARCHITECT</role>
 
-Act as ENGINEER.
-Explain the refactor.
-Identify affected files.
-Provide a diff plan.
-Wait for my confirmation.
-```
+<task>Assess the architectural implications and propose an updated architecture.</task>
 
----
-
-## 8.4 New File
-
-```
-Create a new file.
-
-File path: <path>.
-Purpose: <describe purpose>.
-Contents: <describe what should be inside>.
-
-Act as ENGINEER.
-Explain the file structure.
-Wait for my confirmation before generating the file.
+<constraints>
+- Resolve all questions before producing a draft
+- Do not submit a design with unresolved questions
+- Wait for my confirmation
+</constraints>
 ```
 
 ---
 
-## 8.5 Modify Existing File
+## 9.4 Documentation Updates
 
 ```
-Modify an existing file.
+<context>
+File: [path]
+Change required: [describe the change]
+</context>
 
-File: <path>.
-Change required: <describe change>.
-Scope: <minimal / moderate / major>.
-
-Act as ENGINEER.
-Explain the change.
-Provide a diff plan.
-Wait for my confirmation.
+<task>Explain the proposed change and wait for my confirmation before modifying anything.</task>
 ```
 
 ---
 
-## 8.6 Reverse‑Engineering
-
-```
-Reverse-engineering request.
-
-Goal: Understand the following file:
-<file path>
-
-Act as ARCHITECT.
-Summarise the file.
-Explain its purpose.
-Explain how it fits into the system.
-Identify risks or issues.
-```
+# 10. Managing Large Projects
 
 ---
 
-## 8.7 Architecture Changes
+## 10.1 Architecture Summaries
 
-```
-Architecture change request.
-
-Change: <describe change>.
-Reason: <why>.
-Impact: <expected impact>.
-
-Act as ARCHITECT.
-Explain the architectural implications.
-Propose updated architecture.
-Wait for my confirmation.
-```
-
----
-
-## 8.8 Documentation Updates
-
-```
-Documentation update request.
-
-File: <path>.
-Change required: <describe change>.
-
-Act as ENGINEER.
-Provide a diff plan.
-Wait for my confirmation.
-```
-
----
-
-# 9. Managing Large Projects
-
-Large or long‑running projects require additional structure to prevent drift, maintain clarity, and keep Claude operating efficiently. This section provides the operational practices that ensure stability over weeks or months of development.
-
----
-
-## 9.1 Architecture Summaries
-
-Architecture summaries are the backbone of long‑term stability.
-
-They should include:
+Architecture summaries should include:
 
 - High‑level system overview  
 - Module breakdown  
-- File map  
 - Data flow  
 - Key dependencies  
 - Integration points  
 - Known constraints  
 - Known risks  
 
-Update the summary when:
-
-- A major feature is added  
-- A major refactor occurs  
-- A subsystem changes  
-- A new design version is created  
-
-Claude uses this summary to stay anchored and avoid drift.
+Update when major features are added, redesigns occur, or new design versions are created.
 
 ---
 
-## 9.2 Design Versioning (Design‑vX.md)
+## 10.2 Design Versioning
 
-Design documents are **immutable snapshots** of the system’s architecture at a point in time.
-
-Rules:
-
-- Never modify a design document after approval  
-- Always create a new version for major architectural changes  
-- Reference the design version in conversations when needed  
-- Keep versions small and focused  
-
-Example versioning:
+Design documents are **immutable snapshots** of the system's architecture at a point in time.
 
 - `Design‑v1.md` — initial architecture  
 - `Design‑v2.md` — after major refactor  
 - `Design‑v3.md` — after new subsystem added  
 
-Claude relies on these documents to understand architectural evolution.
+Never modify a design document after approval. Always create a new version for major architectural changes.
 
 ---
 
-## 9.3 Improvements Tracking (Improvements.md)
+## 10.3 Improvements Tracking
 
-This file tracks:
-
-- Feature requests  
-- Bug fixes  
-- Refactors  
-- Technical debt  
-- Architecture changes  
-- Performance improvements  
-- Documentation needs  
-
-Each entry should include:
-
-- Description  
-- Priority  
-- Impact  
-- Dependencies  
-- Status  
-
-Claude uses this file to plan sprints and tasks.
+`Improvements.md` tracks features, fixes, refactors, technical debt, and architecture changes. Each entry should include description, priority, impact, dependencies, and status. Claude Code uses this for task‑level execution.
 
 ---
 
-## 9.4 Snapshots
+## 10.4 Snapshots
 
-Snapshots are point‑in‑time captures of:
-
-- Architecture  
-- Key files  
-- Requirements  
-- Decisions  
-- Constraints  
-
-Use snapshots:
-
-- Before major changes  
-- Before refactors  
-- Before subsystem rewrites  
-- Before switching tasks  
-
-Snapshots help Claude recover if drift occurs.
+Snapshots are point‑in‑time captures of architecture, key files, requirements, and decisions. Use before major changes, refactors, or subsystem rewrites.
 
 ---
 
-## 9.5 Checkpoints
+## 10.5 Checkpoints
 
-Checkpoints are lightweight summaries of:
-
-- What was done  
-- What is next  
-- What changed  
-- What remains  
-
-Use checkpoints:
-
-- At the end of each task  
-- At the end of each sprint  
-- After context resets  
-
-Claude uses checkpoints to re‑anchor itself quickly.
+Checkpoints are lightweight summaries of what was done, what is next, what changed, and what remains. Use at the end of each task or sprint, and after context resets.
 
 ---
 
-## 9.6 Resetting Context Safely
-
-Reset context every:
-
-- 20–30 messages  
-- After major architectural discussions  
-- After long brainstorming sessions  
-- When drift is detected  
-
-Use:
+## 10.6 Resetting Context Safely
 
 ```
-Reset context.
-Reload project_instructions.txt.
-Do not re-read all files.
-Ask me what we are working on.
+<task>Reset context.</task>
+<constraints>
+- Reload project_instructions.txt
+- Do not re-read all files
+- Ask me what we are working on before proceeding
+</constraints>
 ```
 
 Then:
 
 ```
-Re-anchor to instructions.
-Summarise the architecture.
-Summarise the current task.
-Wait for my confirmation.
+<task>Re-anchor to instructions.</task>
+<constraints>
+- Summarise the architecture
+- Summarise the current task
+- Wait for my confirmation before proceeding
+</constraints>
 ```
 
 ---
 
-## 9.7 Avoiding Drift in Large Projects
-
-To prevent drift:
+## 10.7 Avoiding Drift in Large Projects
 
 - Keep messages short  
 - Keep tasks small  
-- Avoid mixing exploration and implementation  
 - Use architecture summaries  
 - Use design versioning  
 - Use checkpoints  
 - Reset context regularly  
-- Avoid long back‑and‑forths in ENGINEER mode  
-- Avoid unnecessary full‑file rewrites  
 
 ---
 
-# 10. Troubleshooting & Recovery
-
-This section provides clear, actionable procedures for diagnosing and fixing common issues in Claude Projects.
-
-Each issue includes:
-
-- Symptoms  
-- Cause  
-- Fix  
-- Prevention  
+# 11. Troubleshooting & Recovery
 
 ---
 
-## 10.1 Claude Rewrote a File Unexpectedly
+## 11.1 Claude Rewrote a Document Unexpectedly
 
-### Symptoms
-- Entire file replaced  
-- Formatting changed  
-- Unrelated sections modified  
+**Symptoms:** Entire document replaced, unrelated sections modified.
 
-### Cause
-- Claude misinterpreted the request  
-- Context overload  
-- Missing diff plan  
-
-### Fix
+**Fix:**
 ```
 Stop.
 Re-anchor to instructions.
-Summarise the architecture.
-Summarise the intended change.
-Provide a minimal diff.
+Revert to the approved version.
+Summarise the intended change only.
 ```
 
-### Prevention
-- Always request a diff plan  
-- Use “Explain Before You Change”  
-- Keep tasks small  
+**Prevention:** Always request a summary of changes before Claude modifies any document.
 
 ---
 
-## 10.2 Claude Forgot the Architecture
+## 11.2 Claude Forgot the Architecture
 
-### Symptoms
-- Incorrect assumptions  
-- Missing components  
-- Wrong file references  
+**Symptoms:** Incorrect assumptions, missing components, wrong file references.
 
-### Cause
-- Context window overload  
-- Long conversation without resets  
-
-### Fix
+**Fix:**
 ```
-Re-anchor to instructions.
-Summarise the architecture.
-Summarise the current task.
-Wait for my confirmation.
+<task>Re-anchor to instructions.</task>
+<constraints>
+- Summarise the architecture
+- Summarise the current task
+- Wait for my confirmation before proceeding
+</constraints>
 ```
 
-### Prevention
-- Reset context every 20–30 messages  
-- Maintain architecture summaries  
+**Prevention:** Reset context every 20–30 messages. Maintain architecture summaries.
 
 ---
 
-## 10.3 Claude Hallucinated File Structure
+## 11.3 Claude Hallucinated File Structure
 
-### Symptoms
-- References to files that don’t exist  
-- Incorrect paths  
-- Invented modules  
+**Symptoms:** References to files that don't exist, incorrect paths, invented modules.
 
-### Cause
-- Context compression  
-- Missing architecture summary  
-
-### Fix
+**Fix:**
 ```
 List all files in the project.
 Correct the file map.
 Re-anchor to instructions.
 ```
 
-### Prevention
-- Keep file maps updated  
-- Use architecture summaries  
+**Prevention:** Keep file maps updated. Use architecture summaries.
 
 ---
 
-## 10.4 Claude Is Asking for Files That Exist
+## 11.4 Claude Is Asking for Files That Exist
 
-### Symptoms
-- “Please upload X”  
-- “I cannot find Y”  
+**Symptoms:** "Please upload X", "I cannot find Y".
 
-### Cause
-- Context overload  
-- Misalignment between memory and conversation  
-
-### Fix
+**Fix:**
 ```
 Reset context.
 Reload project_instructions.txt.
 Ask me what we are working on.
 ```
 
-### Prevention
-- Reset context regularly  
-- Avoid long chats  
-
 ---
 
-## 10.5 Claude Is Contradicting Earlier Decisions
+## 11.5 Claude Is Contradicting Earlier Decisions
 
-### Symptoms
-- Changing requirements  
-- Changing architecture  
-- Changing naming conventions  
+**Symptoms:** Changing requirements, changing architecture, changing naming conventions.
 
-### Cause
-- Context compression  
-- Missing design version reference  
-
-### Fix
+**Fix:**
 ```
-Refer to Design‑vX.md.
+Refer to Design-vX.md.
 Re-anchor to instructions.
 Summarise the architecture.
 ```
 
-### Prevention
-- Use design versioning  
-- Keep decisions documented  
-
 ---
 
-## 10.6 Claude Is Drifting From Instructions
+## 11.6 Claude Is Drifting From Instructions
 
-### Symptoms
-- Ignoring workflow rules  
-- Generating code prematurely  
-- Skipping diff plans  
+**Symptoms:** Ignoring workflow rules, generating content prematurely, skipping approval steps.
 
-### Cause
-- Context overload  
-- Missing re‑anchoring  
-
-### Fix
+**Fix:**
 ```
 Re-anchor to instructions.
 Summarise the workflow rules.
 Wait for my confirmation.
 ```
 
-### Prevention
-- Reset context  
-- Keep instructions stable  
+---
+
+## 11.7 Claude Left Open Questions in a Design
+
+**Symptoms:** "TBD" fields, blank sections, vague statements like "to be decided later".
+
+**Cause:** ARCHITECT did not complete requirements gathering before drafting.
+
+**Fix:**
+```
+Stop.
+This design is incomplete.
+Return to requirements gathering.
+Resolve all open questions before producing a new draft.
+Do not resubmit until all fields are complete or marked as explicit placeholders
+with What, Why, When, and Interim Assumption fields completed.
+```
+
+**Prevention:** Never approve a design with unresolved questions. Enforce the Design Completeness Rule before locking any document.
 
 ---
 
-## 10.7 Claude Is Generating Too Much Code
+# 12. Quick‑Use Cheat Sheet
 
-### Symptoms
-- Full‑file rewrites  
-- Large blocks of code  
-- Unnecessary regeneration  
-
-### Cause
-- Vague requests  
-- Missing diff plan  
-- ENGINEER mode over‑engaged  
-
-### Fix
-```
-Provide only the minimal diff.
-Do not regenerate full files.
-```
-
-### Prevention
-- Use precise change requests  
-- Always request a diff plan  
+See `Projects Cheatsheet.md` for the fast-reference operational guide.
 
 ---
 
-## 10.8 Claude Is Burning Tokens Too Fast
+# 12. Working With Claude Code
 
-### Symptoms
-- Weekly limit approaching  
-- Large responses  
-- Frequent resets  
-- Re‑reading files  
-
-### Cause
-- Long conversations  
-- Brainstorming inside the project  
-- Full‑file rewrites  
-- Re‑explaining context  
-
-### Fix
-- Move exploration to personal chats  
-- Reset context  
-- Use micro‑tasks  
-- Use diff‑first workflows  
-
-### Prevention
-- Follow the cheat sheet rules  
-- Keep tasks small  
-- Avoid unnecessary regeneration  
+This section explains how to operate Claude Code once the handoff documents are ready. It covers session setup, task assignment, how to handle discoveries, and how the two tools work together across a project lifecycle.
 
 ---
 
-# 11. Quick‑Use Cheat Sheet
+## 12.1 What Claude Code Receives
 
-This section provides a fast‑reference operational guide for daily use.
+Claude Code reads the following files from the project folder. These are produced and approved in Claude Projects before any implementation begins:
 
----
+| File | What Claude Code uses it for |
+|---|---|
+| Design-vX.md (active version) | Architecture source of truth — governs all implementation decisions |
+| Improvements.md | Task list, sequencing, and acceptance criteria |
+| CLAUDE.md | Persistent operating instructions for Claude Code |
+| Handoff.md | Boundary rules and conflict resolution |
+| Supporting docs | Additional context (gap analysis, migration plans) |
 
-## 11.1 The 10 Token‑Safe Rules
-
-1. Keep tasks small  
-2. Reset context every 20–30 messages  
-3. Never brainstorm inside the project  
-4. Always request a diff plan  
-5. Use “Explain Before You Change”  
-6. Avoid full‑file rewrites unless necessary  
-7. Keep architecture summaries updated  
-8. Use design versioning  
-9. Use micro‑tasks  
-10. Keep messages short and clear  
+Claude Code does not accept verbal architecture instructions. It derives all context from documents. If the documents are incomplete or ambiguous, Claude Code will ask — not assume.
 
 ---
 
-## 11.2 The 3‑Step Task Workflow
+## 12.2 Setting Up CLAUDE.md
 
-1. Describe the goal  
-2. Confirm scope  
-3. Execute in ENGINEER mode  
+`CLAUDE.md` is Claude Code's equivalent of `project_instructions.txt`. It is loaded at the start of every Claude Code session and defines how it behaves, what it reads, and what it must not do without user approval.
 
----
+**To set it up:**
 
-## 11.3 The 4 Most Important Commands
+1. Copy `CLAUDE.md` from the Claude Projects file set into the root of your codebase
+2. Update the `<version_reference>` block at the bottom to reflect the current active Design-vX.md version
+3. Keep it updated whenever the active design version changes
 
-```
-Act as ARCHITECT.
-Act as STRATEGIST.
-Act as ENGINEER.
-Re-anchor to instructions.
-```
+`CLAUDE.md` must be in the same folder as the codebase root — Claude Code reads it automatically.
 
 ---
 
-## 11.4 Regenerate vs Diff Decision Tree
+## 12.3 Starting a Claude Code Session
 
-- **Small change?** → Diff  
-- **Moderate change?** → Diff  
-- **Major change?** → Full file  
-- **New file?** → Full file  
-- **Refactor?** → Diff + partial regeneration  
+Use the session start prompt from CLAUDE.md at the beginning of every new session:
+
+```
+<context>
+Project documents are in this folder. Read them before proceeding.
+Active design: [Design-vX.md — specify the version]
+</context>
+
+<task>
+Read all project documents in the following order:
+1. Design-vX.md (active version)
+2. Improvements.md
+3. CLAUDE.md
+4. Handoff.md
+5. Any supporting documents
+
+Then confirm your understanding of the architecture and ask me which task to begin.
+</task>
+
+<constraints>
+- Do not write any code until I confirm the task and approach
+- Ask if anything in the documents is ambiguous or conflicting
+</constraints>
+```
+
+Claude Code will read the documents, summarise its understanding of the architecture, and ask which task to begin. Confirm or correct before proceeding.
 
 ---
 
-## 11.5 Safe Message Templates
+## 12.4 Assigning a Task
 
-### New Feature
+Use the ongoing task prompt from CLAUDE.md when assigning work:
+
 ```
-New feature request:
-<feature>
-Act as ENGINEER.
-Explain before you change.
-Provide a diff plan.
+<context>
+Active design: [Design-vX.md — specify version]
+Current Improvements.md status: [note any recent changes if relevant]
+</context>
+
+<task>Implement the following approved task from Improvements.md: [task title]</task>
+
+<constraints>
+- Follow the active Design-vX.md exactly
+- Follow the acceptance criteria in Improvements.md for this task
+- State your intended approach and affected files before writing any code
+- Wait for my confirmation before proceeding
+</constraints>
 ```
 
-### Bug Fix
-```
-Bug fix:
-<bug>
-Act as ENGINEER.
-Explain root cause.
-Provide a diff plan.
-```
-
-### Refactor
-```
-Refactor request:
-<goal>
-Act as ENGINEER.
-Explain the refactor.
-Provide a diff plan.
-```
+Claude Code will state its approach and affected files. **Do not let it proceed until you have confirmed.** This prevents wasted effort from misinterpretation.
 
 ---
 
-## 11.6 Context Window Rules
+## 12.5 Reviewing Claude Code Output
 
-- Reset every 20–30 messages  
-- Keep tasks small  
-- Avoid long chats  
-- Move exploration to personal chats  
-- Use architecture summaries  
+Before accepting any output from Claude Code:
 
----
+- Confirm the changed files match what was agreed
+- Confirm no files outside the task scope were modified
+- Confirm the implementation matches the acceptance criteria in Improvements.md
+- Confirm no architectural deviations were made without your approval
 
-## 11.7 Drift Indicators
-
-- Claude forgets architecture  
-- Claude rewrites entire files  
-- Claude asks for files that exist  
-- Claude contradicts earlier decisions  
-
----
-
-## 11.8 Reset Procedure
+If something looks wrong:
 
 ```
-Reset context.
-Reload project_instructions.txt.
-Do not re-read all files.
-Ask me what we are working on.
+<task>Stop. Explain the deviation from the agreed approach.</task>
+<constraints>Do not make further changes until I confirm the correct path.</constraints>
 ```
 
 ---
 
-## 11.9 Never‑Do List
+## 12.6 When Claude Code Discovers a Gap
 
-- Never brainstorm inside the project  
-- Never paste large code blocks unnecessarily  
-- Never request vague changes  
-- Never skip diff plans  
-- Never mix exploration with implementation  
+During implementation, Claude Code may discover something that requires an architectural decision — a missing design detail, a conflict between documents, or an assumption that needs to be made explicit.
+
+When this happens, Claude Code should stop and report. If it does not, prompt it:
+
+```
+<task>Stop the current implementation.</task>
+<constraints>
+- Document the issue clearly: what was discovered, why it requires a decision, and what the options are
+- Do not proceed until I decide
+</constraints>
+```
+
+Once you have the issue documented, return to Claude Projects:
+
+```
+<context>Claude Code discovered the following issue during implementation: [paste the issue]</context>
+
+<role>ARCHITECT</role>
+
+<task>Assess whether this requires a design change.</task>
+
+<constraints>
+- If a design change is needed, produce an updated Design-vX.md or initiate a redesign
+- If it can be resolved within Improvements.md, update that document
+- Wait for my confirmation before any document is locked
+</constraints>
+```
+
+Once the design is updated and approved, return to Claude Code with the updated documents.
 
 ---
 
-# 12. Glossary (Non‑Developer Friendly)
+## 12.7 Keeping CLAUDE.md Current
+
+Update CLAUDE.md whenever:
+
+- The active Design-vX.md version changes (redesign approved)
+- Improvements.md is significantly restructured
+- Operating rules or constraints change
+
+Always update the `<version_reference>` block at the bottom of CLAUDE.md after any design version change. Claude Code uses this to confirm it is reading the correct documents.
+
+---
+
+## 12.8 The Full Lifecycle Loop
+
+```
+Claude Projects (ARCHITECT)
+  → Requirements gathering
+  → Design-vX.md approved and locked
+
+Claude Projects (STRATEGIST)
+  → Improvements.md approved
+
+Handoff
+  → Documents copied to codebase folder
+  → CLAUDE.md version reference updated
+
+Claude Code
+  → Reads documents
+  → Confirms understanding
+  → Implements task by task
+  → Flags gaps back to user
+
+If gap requires architecture change:
+  → Return to Claude Projects (ARCHITECT)
+  → Update or version the design
+  → Return to Claude Code with updated documents
+
+Repeat until delivery.
+```
+
+---
+
+# 13. Glossary
+
 
 **Architecture** — The structure of the system.  
-**Diff** — A list of changes to a file.  
-**Refactor** — Improve code without changing behaviour.  
-**Context window** — How much Claude can remember at once.
-**Reset context** — Starting a new chat inside the same Claude Project, which clears the conversational history while preserving all project files, instructions, and structure. This prevents context‑window overload and keeps Claude aligned without requiring re‑uploads or re‑explanations.
+**Placeholder** — A design entry that cannot be resolved until build time, requiring all four fields: What, Why, When, Interim Assumption.  
+**Refactor** — Improve structure without changing behaviour.  
+**Context window** — How much Claude can hold in memory at once.  
+**Reset context** — Start a new chat inside the same Claude Project, clearing conversation history while preserving all project files, instructions, and structure.  
 **Snapshot** — A point‑in‑time capture of the project.  
-**Checkpoint** — A summary of recent progress.  
-**Workflow mode** — The project type (greenfield, rebuild, etc.).  
-**Role** — ARCHITECT, STRATEGIST, ENGINEER.  
-**Regenerate** — Rewrite an entire file.  
+**Checkpoint** — A summary of recent progress and next steps.  
+**Workflow mode** — The project type (greenfield, brownfield, etc.).  
+**Role** — ARCHITECT or STRATEGIST.  
 **Micro‑task** — A very small, focused task.  
-
----
-
-# 13. Final Notes
-
-- Keep this document updated as your workflow evolves  
-- Update design versions when architecture changes  
-- Use Improvements.md to track work  
-- Reset context regularly  
-- Keep Claude anchored to instructions  
-- Maintain architecture summaries  
-
----
+**Handoff** — The point at which approved design documents are passed to Claude Code for implementation.  
+**Design Completeness Rule** — The requirement that no design document may be approved or locked while it contains unresolved questions or unpopulated fields.
