@@ -280,9 +280,8 @@ Read all project documents:
 1. Scan for all Design-v*.md files and identify the highest-numbered version as the active design
 2. Read the active Design-vX.md
 3. Read Improvements.md
-4. Read CLAUDE.md
-5. Read Handoff.md
-6. Read any supporting documents
+4. Read Handoff.md
+5. Read any supporting documents
 
 Confirm your understanding of the architecture, state which design version is active, and ask me which task to begin.
 </task>
@@ -297,7 +296,7 @@ Confirm your understanding of the architecture, state which design version is ac
 ### Assign a task
 ```
 <context>
-Current Improvements.md status: [note any recent changes if relevant]
+Current Improvements.md status: [note any recent changes, or omit if unchanged]
 </context>
 
 <task>Implement this approved task from Improvements.md: [task title]</task>
