@@ -163,9 +163,10 @@ This is why Projects mode is dramatically more efficient than normal chats.
 
 ## 2.2 Project Instructions Are Auto‑Loaded
 
-Claude automatically loads:
+Claude automatically loads `project_instructions.txt` at session initialisation — it is cached for the session, not re-read on every individual message. This keeps per-message token cost low, but means instruction changes made mid-session may not take effect until a new session is started.
 
-- `project_instructions.txt` every message  
+Claude also loads:
+
 - Any files you explicitly reference  
 - Any files Claude needs to complete a task  
 
@@ -179,6 +180,7 @@ But it also means:
 
 - If the conversation gets too long, Claude may re‑interpret instructions  
 - If context overload occurs, Claude may drift  
+- If you update `project_instructions.txt` mid-session, start a new chat to ensure the updated version is loaded  
 
 ---
 
@@ -390,10 +392,12 @@ Your instruction system is the backbone of your workflow. It ensures Claude beha
 
 This file is:
 
-- Loaded automatically every message  
+- Loaded automatically at session initialisation  
 - The "operating system" for Claude  
 - The source of truth for roles and workflow  
 - The behavioural contract Claude must follow  
+
+If you update this file, start a new chat to ensure the updated version takes effect.
 
 ---
 
@@ -492,7 +496,7 @@ Update them after major changes.
 
 ## 5.8 Claude Code Handoff
 
-When design and planning documents are approved, they are handed off to Claude Code for implementation. Claude Code reads the approved documents from the project folder and derives all architectural context from them.
+When design and planning documents are approved, they are handed off to Claude Code for implementation. Claude Code reads the approved documents from the project folder, auto-detects the highest-numbered `Design-vX.md` as the active design, and derives all architectural context from them.
 
 See `Handoff.md` for the full boundary definition, folder structure, and Claude Code operating sequence.
 
@@ -613,7 +617,7 @@ Upload:
 
 ## 7.2 Confirm Project Instructions Are Loaded
 
-Claude automatically loads `project_instructions.txt` every message. You do not need to paste instructions manually.
+Claude automatically loads `project_instructions.txt` at session initialisation. You do not need to paste instructions manually. If you have recently updated `project_instructions.txt`, start a new chat to ensure the latest version is loaded.
 
 ---
 
@@ -680,7 +684,7 @@ If correct:
 <constraints>Follow the process defined in Handoff.md.</constraints>
 ```
 
-Claude Code will then read the documents from the project folder.
+Claude Code will then read the documents from the project folder and auto-detect the active design version.
 
 ---
 
@@ -1006,12 +1010,6 @@ with What, Why, When, and Interim Assumption fields completed.
 
 ---
 
-# 12. Quick‑Use Cheat Sheet
-
-See `Projects Cheatsheet.md` for the fast-reference operational guide.
-
----
-
 # 12. Working With Claude Code
 
 This section explains how to operate Claude Code once the handoff documents are ready. It covers session setup, task assignment, how to handle discoveries, and how the two tools work together across a project lifecycle.
@@ -1024,75 +1022,75 @@ Claude Code reads the following files from the project folder. These are produce
 
 | File | What Claude Code uses it for |
 |---|---|
-| Design-vX.md (active version) | Architecture source of truth — governs all implementation decisions |
+| Design-vX.md (highest-numbered version) | Architecture source of truth — auto-detected, governs all implementation decisions |
 | Improvements.md | Task list, sequencing, and acceptance criteria |
 | CLAUDE.md | Persistent operating instructions for Claude Code |
 | Handoff.md | Boundary rules and conflict resolution |
 | Supporting docs | Additional context (gap analysis, migration plans) |
 
-Claude Code does not accept verbal architecture instructions. It derives all context from documents. If the documents are incomplete or ambiguous, Claude Code will ask — not assume.
+Claude Code does not accept verbal architecture instructions. It derives all context from documents. It auto-detects the highest-numbered `Design-vX.md` as the active design — no manual version specification is required. If the documents are incomplete or ambiguous, Claude Code will ask — not assume.
 
 ---
 
 ## 12.2 Setting Up CLAUDE.md
 
-`CLAUDE.md` is Claude Code's equivalent of `project_instructions.txt`. It is loaded at the start of every Claude Code session and defines how it behaves, what it reads, and what it must not do without user approval.
+`CLAUDE.md` is Claude Code's persistent instruction file. It is loaded at the start of every Claude Code session and defines how it behaves, what it reads, and what it must not do without user approval.
 
 **To set it up:**
 
-1. Copy `CLAUDE.md` from the Claude Projects file set into the root of your codebase
-2. Update the `<version_reference>` block at the bottom to reflect the current active Design-vX.md version
-3. Keep it updated whenever the active design version changes
+1. Copy `CLAUDE.md` to the **codebase root** — the directory you launch Claude Code from (where you run `claude` in your terminal). This is typically where `.git`, `package.json`, `requirements.txt`, or equivalent project-level files live.
+2. Claude Code auto-detects the highest-numbered `Design-vX.md` at session start — no manual version configuration is required.
+3. Update only the last-updated date in the `<version_reference>` block when you revise `CLAUDE.md`.
 
-`CLAUDE.md` must be in the same folder as the codebase root — Claude Code reads it automatically.
+> **Important:** If you launch Claude Code from a different directory than the codebase root, `CLAUDE.md` will not be found and your persistent instructions will not load. Always launch from the codebase root.
 
 ---
 
 ## 12.3 Starting a Claude Code Session
 
-Use the session start prompt from CLAUDE.md at the beginning of every new session:
+Use the session start prompt at the beginning of every new session:
 
 ```
 <context>
 Project documents are in this folder. Read them before proceeding.
-Active design: [Design-vX.md — specify the version]
 </context>
 
 <task>
 Read all project documents in the following order:
-1. Design-vX.md (active version)
-2. Improvements.md
-3. CLAUDE.md
-4. Handoff.md
-5. Any supporting documents
+1. Scan for all Design-v*.md files and identify the highest-numbered version as the active design
+2. Read the active Design-vX.md
+3. Read Improvements.md
+4. Read Handoff.md
+5. Read any supporting documents
 
-Then confirm your understanding of the architecture and ask me which task to begin.
+Confirm your understanding of the architecture, state which design version is active,
+and ask me which task to begin.
 </task>
 
 <constraints>
 - Do not write any code until I confirm the task and approach
 - Ask if anything in the documents is ambiguous or conflicting
+- If any required document is missing, stop and notify me before proceeding
 </constraints>
 ```
 
-Claude Code will read the documents, summarise its understanding of the architecture, and ask which task to begin. Confirm or correct before proceeding.
+Claude Code will read the documents, state the active design version, summarise its understanding of the architecture, and ask which task to begin. Confirm or correct before proceeding.
 
 ---
 
 ## 12.4 Assigning a Task
 
-Use the ongoing task prompt from CLAUDE.md when assigning work:
+Use the ongoing task prompt when assigning work:
 
 ```
 <context>
-Active design: [Design-vX.md — specify version]
 Current Improvements.md status: [note any recent changes if relevant]
 </context>
 
 <task>Implement the following approved task from Improvements.md: [task title]</task>
 
 <constraints>
-- Follow the active Design-vX.md exactly
+- Follow the active Design-vX.md (auto-detected at session start)
 - Follow the acceptance criteria in Improvements.md for this task
 - State your intended approach and affected files before writing any code
 - Wait for my confirmation before proceeding
@@ -1107,10 +1105,10 @@ Claude Code will state its approach and affected files. **Do not let it proceed 
 
 Before accepting any output from Claude Code:
 
-- Confirm the changed files match what was agreed
-- Confirm no files outside the task scope were modified
-- Confirm the implementation matches the acceptance criteria in Improvements.md
-- Confirm no architectural deviations were made without your approval
+- Confirm the changed files match what was agreed  
+- Confirm no files outside the task scope were modified  
+- Confirm the implementation matches the acceptance criteria in Improvements.md  
+- Confirm no architectural deviations were made without your approval  
 
 If something looks wrong:
 
@@ -1151,19 +1149,23 @@ Once you have the issue documented, return to Claude Projects:
 </constraints>
 ```
 
-Once the design is updated and approved, return to Claude Code with the updated documents.
+Once the design is updated and approved, return to Claude Code with the updated documents. Claude Code will auto-detect the new highest-numbered `Design-vX.md` at the next session start — no manual version update in `CLAUDE.md` is required. If the redesign also changes any operating rules or constraints documented in `CLAUDE.md`, update that file before starting the next Claude Code session and update the last-updated date in the `<version_reference>` block.
 
 ---
 
 ## 12.7 Keeping CLAUDE.md Current
 
-Update CLAUDE.md whenever:
+`CLAUDE.md` requires minimal maintenance because active design version detection is automatic.
 
-- The active Design-vX.md version changes (redesign approved)
-- Improvements.md is significantly restructured
-- Operating rules or constraints change
+Update `CLAUDE.md` only when:
 
-Always update the `<version_reference>` block at the bottom of CLAUDE.md after any design version change. Claude Code uses this to confirm it is reading the correct documents.
+- Operating rules or constraints change  
+- The session start or task prompt templates are revised  
+- New quality check requirements are added  
+
+When you do update it, update the last-updated date in the `<version_reference>` block.
+
+You do **not** need to update `CLAUDE.md` when a new `Design-vX.md` version is created — Claude Code will detect it automatically.
 
 ---
 
@@ -1178,19 +1180,21 @@ Claude Projects (STRATEGIST)
   → Improvements.md approved
 
 Handoff
-  → Documents copied to codebase folder
-  → CLAUDE.md version reference updated
+  → Documents copied to codebase root
+  → Claude Code launched from codebase root
+  → CLAUDE.md auto-loaded
+  → Active Design-vX.md auto-detected
 
 Claude Code
-  → Reads documents
-  → Confirms understanding
+  → Reads all documents
+  → Confirms active design version and understanding
   → Implements task by task
   → Flags gaps back to user
 
 If gap requires architecture change:
   → Return to Claude Projects (ARCHITECT)
   → Update or version the design
-  → Return to Claude Code with updated documents
+  → Return to Claude Code — new version auto-detected at next session start
 
 Repeat until delivery.
 ```
@@ -1199,8 +1203,8 @@ Repeat until delivery.
 
 # 13. Glossary
 
-
 **Architecture** — The structure of the system.  
+**Codebase root** — The directory you launch Claude Code from (where you run `claude` in your terminal). `CLAUDE.md` must be placed here for auto-loading. Typically where `.git`, `package.json`, or `requirements.txt` live.  
 **Placeholder** — A design entry that cannot be resolved until build time, requiring all four fields: What, Why, When, Interim Assumption.  
 **Refactor** — Improve structure without changing behaviour.  
 **Context window** — How much Claude can hold in memory at once.  
@@ -1211,4 +1215,5 @@ Repeat until delivery.
 **Role** — ARCHITECT or STRATEGIST.  
 **Micro‑task** — A very small, focused task.  
 **Handoff** — The point at which approved design documents are passed to Claude Code for implementation.  
-**Design Completeness Rule** — The requirement that no design document may be approved or locked while it contains unresolved questions or unpopulated fields.
+**Design Completeness Rule** — The requirement that no design document may be approved or locked while it contains unresolved questions or unpopulated fields.  
+**Active design** — The highest-numbered approved `Design-vX.md`. Auto-detected by Claude Code at session start.
