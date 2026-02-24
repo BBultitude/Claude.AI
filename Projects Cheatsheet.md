@@ -260,47 +260,50 @@ Claude is drifting if it:
 **Architecture summary** — A stable reference describing system structure.  
 **Design‑vX.md** — Immutable, approved architecture version.  
 **Handoff** — Approved documents passed to Claude Code for implementation.  
-**Design Completeness Rule** — No design may be approved while it contains unresolved questions.
+**Design Completeness Rule** — No design may be approved while it contains unresolved questions.  
+**Codebase root** — The directory you launch Claude Code from (where you run `claude` in your terminal). CLAUDE.md must be placed here for auto-loading.
 
 ---
 
 ## 12. Claude Code Quick Reference
 
+> **Before sending any prompt below:** Replace all `[bracketed placeholders]` with actual values. Unpopulated placeholders are passed literally to Claude Code and will cause incorrect behaviour.
+
 ### Session start prompt
 ```
 <context>
-Project documents are in this folder.
-Active design: [Design-vX.md — specify version]
+Project documents are in this folder. Read them before proceeding.
 </context>
 
 <task>
 Read all project documents:
-1. Design-vX.md (active version)
-2. Improvements.md
-3. CLAUDE.md
-4. Handoff.md
-5. Supporting documents
+1. Scan for all Design-v*.md files and identify the highest-numbered version as the active design
+2. Read the active Design-vX.md
+3. Read Improvements.md
+4. Read CLAUDE.md
+5. Read Handoff.md
+6. Read any supporting documents
 
-Confirm your understanding of the architecture.
-Ask me which task to begin.
+Confirm your understanding of the architecture, state which design version is active, and ask me which task to begin.
 </task>
 
 <constraints>
 - Do not write any code until I confirm
 - Ask if anything is ambiguous or conflicting
+- If any required document is missing, stop and notify me before proceeding
 </constraints>
 ```
 
 ### Assign a task
 ```
 <context>
-Active design: [Design-vX.md version]
+Current Improvements.md status: [note any recent changes if relevant]
 </context>
 
 <task>Implement this approved task from Improvements.md: [task title]</task>
 
 <constraints>
-- Follow active Design-vX.md exactly
+- Follow the active Design-vX.md (auto-detected at session start)
 - Follow acceptance criteria in Improvements.md
 - State approach and affected files before coding
 - Wait for my confirmation
@@ -337,9 +340,10 @@ Then return to Claude Projects with:
 ```
 
 ### CLAUDE.md rules
-- Copy to codebase root before first Claude Code session
-- Update `<version_reference>` whenever the active design version changes
-- Claude Code reads it automatically at session start
+- Copy to the **codebase root** — the directory you launch Claude Code from (where you run `claude` in your terminal)
+- Claude Code auto-detects the highest-numbered Design-vX.md — no manual version tracking required
+- Update the last-updated date in `<version_reference>` on each revision
+- Claude Code reads CLAUDE.md automatically at session start
 
 ### Never do in Claude Code
 - Give verbal architecture instructions — put them in documents

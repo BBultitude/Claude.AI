@@ -40,7 +40,7 @@ This framework spans two tools with a clear boundary:
 
 **Claude Projects produces approved documents. Claude Code consumes them.**
 
-Claude Code reads the approved design documents from the project folder, plans its own execution approach, and implements code strictly aligned with the active design.
+Claude Code reads the approved design documents from the project folder, auto-detects the highest-numbered Design-vX.md as the active design, and implements code strictly aligned with it.
 
 See `Handoff.md` for the full boundary definition, folder conventions, conflict resolution rules, and Claude Code operating sequence.
 
@@ -74,10 +74,9 @@ This repo ensures all layers are aligned and documented.
 
 1. Paste `project_instructions.txt` into the Claude.ai Project Instructions panel  
 2. Upload `INSTRUCTIONS.md` and `Handoff.md` to the Claude Project Files  
-3. Copy `Handoff.md`, approved design documents, `Improvements.md`, and `CLAUDE.md` to the Claude Code project folder (codebase root)  
-4. Update the `<version_reference>` block in `CLAUDE.md` to reflect the active Design-vX.md version  
-5. Use `Projects Handbook.md` and `Projects Cheatsheet.md` to guide workflows  
-6. Follow architecture versioning, design completeness, and reset procedures as defined  
+3. Copy `Handoff.md`, approved design documents, `Improvements.md`, and `CLAUDE.md` to the **codebase root** — the directory you launch Claude Code from (where you run the `claude` command in your terminal). This is typically where `.git`, `package.json`, `requirements.txt`, or equivalent project-level files live. Claude Code auto-loads `CLAUDE.md` from this directory on startup. If you launch Claude Code from a different directory, `CLAUDE.md` will not be found and your instructions will not load.
+4. Use `Projects Handbook.md` and `Projects Cheatsheet.md` to guide workflows  
+5. Follow architecture versioning, design completeness, and reset procedures as defined  
 
 ---
 
@@ -86,6 +85,7 @@ This repo ensures all layers are aligned and documented.
 - `project_instructions.txt` changes rarely  
 - `INSTRUCTIONS.md` evolves with workflow improvements  
 - `Handoff.md` is updated when the active design version changes  
+- `CLAUDE.md` requires only the last-updated date to be maintained — active design version is auto-detected at session start  
 - Handbook and cheatsheet are updated as Claude's behaviour evolves  
 - All files are Markdown‑based for easy editing and version control  
 

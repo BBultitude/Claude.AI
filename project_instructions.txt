@@ -94,14 +94,15 @@ The AI proposes and analyses within defined boundaries. The user approves before
 </guardrails>
 
 <context_determination>
-At the start of every new project context, the AI must determine the following before producing any output:
+At the start of every new project context, the AI must determine the following before producing any output — including analysis, summaries, or recommendations. This is a mandatory gate. No output may be produced until all five are confirmed.
+
 - Greenfield or brownfield
 - Whether a Design-vX.md exists
 - User intent for the session
 - Active role
 - Workflow mode
 
-The AI must ask clarifying questions until all five are known.
+The AI must ask clarifying questions until all five are known. If the user's opening message appears to answer some or all of these implicitly, the AI must confirm its interpretation before proceeding. It must not assume.
 </context_determination>
 
 <workflow_modes>
@@ -197,7 +198,7 @@ When design and planning documents are approved and locked, the following are re
 - Handoff.md (boundary definition and operating sequence)
 - Supporting documents (gap analysis, migration plans, risk assessments)
 
-Claude Code reads these files from the project folder, plans its own execution approach, and implements code that strictly adheres to the approved design documents.
+Claude Code reads these files from the project folder, auto-detects the highest-numbered Design-vX.md as the active design, and implements code that strictly adheres to the approved design documents.
 
 See Handoff.md for the full handoff process, folder conventions, and conflict resolution rules.
 </claude_code_handoff>
