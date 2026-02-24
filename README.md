@@ -15,7 +15,7 @@ It includes templates, handbooks, cheat sheets, and operational guides designed 
 | `Handoff.md` | Boundary definition between Claude Projects and Claude Code | Upload to Claude Project Files and Claude Code project folder |
 | `CLAUDE.md` | Persistent instruction file for Claude Code | Copy to codebase root — Claude Code reads it automatically |
 
-These three files form the foundation of all behaviour.  
+These four files form the foundation of all behaviour.  
 They must be used together for predictable, stable, and compliant execution.
 
 ---
@@ -73,7 +73,7 @@ This repo ensures all layers are aligned and documented.
 ## ✅ Setup Instructions
 
 1. Paste `project_instructions.txt` into the Claude.ai Project Instructions panel  
-2. Upload `INSTRUCTIONS.md` and `Handoff.md` to the Claude Project Files  
+2. Upload `INSTRUCTIONS.md` and `Handoff.md` to the Claude Project Files. Note: `Handoff.md` must also be copied to the codebase root in Step 3 — it is required in both locations.  
 3. Copy `Handoff.md`, approved design documents, `Improvements.md`, and `CLAUDE.md` to the **codebase root** — the directory you launch Claude Code from (where you run the `claude` command in your terminal). This is typically where `.git`, `package.json`, `requirements.txt`, or equivalent project-level files live. Claude Code auto-loads `CLAUDE.md` from this directory on startup. If you launch Claude Code from a different directory, `CLAUDE.md` will not be found and your instructions will not load.
 4. Use `Projects Handbook.md` and `Projects Cheatsheet.md` to guide workflows  
 5. Follow architecture versioning, design completeness, and reset procedures as defined  
